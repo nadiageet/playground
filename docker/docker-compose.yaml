@@ -1,0 +1,8 @@
+version: '3.5'
+
+services:
+  application:
+    image: playground:0.0.1-SNAPSHOT
+    ports:
+      - "8081:8080"
+  
