@@ -9,29 +9,34 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Service
 @Transactional
 public class QuoteService {
-    
+
     private final RandomQuoteClient randomQuoteClient;
     private final QuoteRepository quoteRepository;
-    
+
     private final UserRepository userRepository;
 
-    public QuoteService(RandomQuoteClient randomQuoteClient, QuoteRepository quoteRepository, UserRepository userRepository) {
+
+    private final QuoteRegistrationRepository quoteRegistrationRepository;
+
+
+    public QuoteService(RandomQuoteClient randomQuoteClient, QuoteRepository quoteRepository, UserRepository userRepository, QuoteRegistrationRepository quoteRegistrationRepository) {
         this.randomQuoteClient = randomQuoteClient;
         this.quoteRepository = quoteRepository;
         this.userRepository = userRepository;
+        this.quoteRegistrationRepository = quoteRegistrationRepository;
     }
 
     @Async
-    public void generateQuote(Integer generationNumber){
+    public void generateQuote(Integer generationNumber) {
 
-        for(int i = 0; i < generationNumber; i++){
+        for (int i = 0; i < generationNumber; i++) {
             generateQuoteFromAPI();
             try {
                 TimeUnit.SECONDS.sleep(1);
@@ -56,5 +61,21 @@ public class QuoteService {
         com.example.playground.User user = userRepository.findByUserName(principal.getUsername());
 
         return userRepository.findAllQuotesByUser(user);
+    }
+
+    public Optional<Quote> getQuoteByID(Long quoteId) {
+        return quoteRepository.findById(quoteId);
+
+    }
+
+    public void proposeQuote(Long quoteId) {
+        QuoteRegistration quote = quoteRegistrationRepository.getReferenceById(quoteId);
+        quote.setProposedQuote(true);
+    }
+
+
+    public void acceptQuote(Long quoteId) {
+
+        quoteRepository.findById(quoteId);
     }
 }

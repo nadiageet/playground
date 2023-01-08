@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -16,12 +15,13 @@ public class QuoteRegistration {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    User user;
+    private User user;
 
 
     @ManyToOne
     @JoinColumn(name = "quote_id")
-    Quote quote;
+    private Quote quote;
 
+    private boolean isProposedQuote = false;
     
 }
