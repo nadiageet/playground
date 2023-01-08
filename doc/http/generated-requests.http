@@ -1,15 +1,29 @@
+### 
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
 
+{
+  "userName": "nadia",
+  "password": "pass"
+}
+
+> {% 
+   const jwt = response.body.jwt;
+   
+   client.global.set("token", jwt);
+   client.log(jwt);
+ %}
 
 ###
 GET http://localhost:8080/quote
-Authorization: Basic {{adminBasic}}
+Authorization: Bearer {{adminJwt}}
 
 <> 2022-12-30T163058.200.txt
 <> 2022-12-30T145625.200.txt
 
 ###
 POST http://localhost:8080/quotes
-Authorization: Basic {{adminBasic}}
+Authorization: Bearer {{adminJwt}}
 Content-Type: application/json
 
 {
@@ -29,7 +43,7 @@ Content-Type: application/json
 
 ### 
 GET http://localhost:8080/quotes
-Authorization: Basic {{adminBasic}}
+Authorization: Bearer {{adminJwt}}
 
 <> 2022-12-30T173433.200.json
 <> 2022-12-30T173410.200.json
@@ -37,13 +51,13 @@ Authorization: Basic {{adminBasic}}
 
 ###
 GET http://localhost:8080/test
-Authorization: Basic {{adminBasic}}
+Authorization: Bearer {{adminJwt}}
 
 <> 2023-01-07T151632.500.json
 
 ###
 GET http://localhost:8080/quotesRegistrations
-Authorization: Basic {{adminBasic}}
+Authorization: Bearer {{token}}
 
 <> 2023-01-07T193438.200.json
 <> 2023-01-07T191614.200.json
@@ -63,7 +77,7 @@ Authorization: Basic {{adminBasic}}
 ###
 
 POST http://localhost:8080/trade/propose/2
-Authorization: Basic {{adminBasic}}
+Authorization: Bearer {{adminJwt}}
 
 <> 2023-01-07T191601.500.json
 <> 2023-01-07T184312.500.json
@@ -71,8 +85,21 @@ Authorization: Basic {{adminBasic}}
 ###
 
 GET http://localhost:8080/quotesProposed
-Authorization: Basic {{collectorBasic}}
+Authorization: Bearer {{collectorJwt}}
 
 <> 2023-01-07T193515.200.json
 <> 2023-01-07T193505.200.json
 
+###
+
+
+
+### 
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "userName": "nadia",
+  "password": "pass",
+  "role": "ADMIN"
+}
