@@ -1,4 +1,4 @@
-### 
+### Se connecter avec username / password et obtenir un token jwt
 POST http://localhost:8080/api/auth/login
 Content-Type: application/json
 
@@ -90,11 +90,7 @@ Authorization: Bearer {{collectorJwt}}
 <> 2023-01-07T193515.200.json
 <> 2023-01-07T193505.200.json
 
-###
-
-
-
-### 
+### Créer un compte
 POST http://localhost:8080/api/auth/register
 Content-Type: application/json
 
