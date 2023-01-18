@@ -18,7 +18,7 @@ import java.io.IOException;
 @Slf4j
 public class JwtFilter extends OncePerRequestFilter {
 
-    
+
     private final JwtUtils jwtUtils;
 
     private final UserDetailsService userDetailsService;
@@ -40,36 +40,38 @@ public class JwtFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        
+
         try {
             final String jwt = parseJwt(headerAuth);
             log.debug("jwt token found in request");
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
                 String username = jwtUtils.getUserNameFromJwtToken(jwt);
                 log.debug("extracting username {} from jwt token", username);
-
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                log.debug("authenticating user {}", username);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                authenticate(request, username);
             }
         } catch (Exception e) {
-            logger.error("Cannot set user authentication: {}", e);
+            logger.error("Cannot set user authentication", e);
         }
 
+    }
+
+    private void authenticate(HttpServletRequest request, String username) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                userDetails, null, userDetails.getAuthorities());
+        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+        log.debug("authenticating user {}", username);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     private String parseJwt(String headerAuth) {
-
         if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
             return headerAuth.substring(7);
+        } else {
+            return null;
         }
-
-        return null;
     }
 
- 
+
 }

@@ -31,6 +31,8 @@ public class CustomWebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/api/auth/**").permitAll()
+                .antMatchers("/actuator/**").permitAll()
+                .antMatchers("/swagger-ui/**").permitAll()
                 .antMatchers("/**").authenticated();
 
         http.csrf().disable();

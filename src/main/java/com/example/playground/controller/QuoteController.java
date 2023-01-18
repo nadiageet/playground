@@ -17,9 +17,11 @@ import java.time.ZoneId;
 import java.util.Locale;
 import java.util.Set;
 
+// TODO: 18/01/2023  split this controller into multiple domains
 @RestController
 @Slf4j
 @ControllerAdvice
+@RequestMapping("/api/v1/")
 public class QuoteController {
 
     private final RandomQuoteClient randomQuoteClient;
@@ -83,12 +85,12 @@ public class QuoteController {
         return QuoteRegistrationMapper.createQuoteRegistration(entities);
     }
 
-    @PostMapping("trade/propose/{quoteId}")
+    @PostMapping("/trade/propose/{quoteId}")
     public void proposeQuote(@PathVariable Long quoteId) {
         quoteService.proposeQuote(quoteId);
     }
 
-    @PostMapping("trade/offer/{quoteId}")
+    @PostMapping("/trade/offer/{quoteId}")
     public void offerQuote(@PathVariable("quoteId") Long quoteId, @RequestParam("requesterId") Long requesterId) {
         quoteService.acceptQuote(quoteId);
     }
