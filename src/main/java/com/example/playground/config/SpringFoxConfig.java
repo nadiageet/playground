@@ -16,6 +16,7 @@ import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
+import springfox.documentation.service.HttpAuthenticationScheme;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
@@ -24,14 +25,16 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import static springfox.documentation.service.HttpAuthenticationScheme.JWT_BEARER_BUILDER;
+
 @Configuration
 public class SpringFoxConfig {
 
     private ApiInfo apiInfo() {
-        return new ApiInfo("MyApp Rest APIs",
-                "APIs for MyApp.",
+        return new ApiInfo("Quote Collector",
+                "APIs for the App",
                 "1.0",
-                "Terms of service",
+                "",
                 new Contact("test", "www.org.com", "test@emaildomain.com"),
                 "License of API",
                 "API license URL",
@@ -40,8 +43,12 @@ public class SpringFoxConfig {
 
     @Bean
     public Docket api() {
+        HttpAuthenticationScheme authenticationScheme = JWT_BEARER_BUILDER
+                .name("jwt").build();
+
         return new Docket(DocumentationType.OAS_30)
                 .apiInfo(apiInfo())
+                .securitySchemes(Collections.singletonList(authenticationScheme))
                 .select()
                 .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.ant("/api/**"))

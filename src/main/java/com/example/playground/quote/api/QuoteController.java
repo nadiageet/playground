@@ -13,6 +13,7 @@ import com.example.playground.quote.service.QuoteService;
 import com.example.playground.user.UserRepository;
 import feign.FeignException;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,7 @@ import java.util.Set;
 @Slf4j
 @ControllerAdvice
 @RequestMapping("/api/v1/")
+@SecurityRequirement(name = "jwt")
 public class QuoteController {
 
     private final RandomQuoteClient randomQuoteClient;

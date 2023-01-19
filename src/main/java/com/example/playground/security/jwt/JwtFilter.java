@@ -14,6 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Enumeration;
 
 @Slf4j
 public class JwtFilter extends OncePerRequestFilter {
@@ -33,6 +34,14 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String headerAuth = request.getHeader("Authorization");
+        Enumeration<String> headerNames = request.getHeaderNames();
+
+        if (headerNames != null) {
+            while (headerNames.hasMoreElements()) {
+                System.out.println("Header: " + request.getHeader(headerNames.nextElement()));
+            }
+        }
+
 
         log.debug("intercepted request received : {}", request.getRequestURI());
         if (headerAuth == null) {
