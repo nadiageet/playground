@@ -1,6 +1,4 @@
-package com.example.playground.security.api;
-
-import com.example.playground.UserRole;
+package com.example.playground.user.api.response;
 
 import java.util.Set;
 

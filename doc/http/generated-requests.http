@@ -1,5 +1,5 @@
 ### Se connecter avec username / password et obtenir un token jwt
-POST http://localhost:8080/api/auth/login
+POST http://localhost:8080/api/v1/auth/login
 Content-Type: application/json
 
 {
@@ -7,22 +7,22 @@ Content-Type: application/json
   "password": "pass"
 }
 
-> {% 
-   const jwt = response.body.jwt;
+> {%
+    const jwt = response.body.jwt;
    
    client.global.set("token", jwt);
    client.log(jwt);
  %}
 
 ###
-GET http://localhost:8080/quote
+GET http://localhost:8080/api/v1/quote
 Authorization: Bearer {{adminJwt}}
 
 <> 2022-12-30T163058.200.txt
 <> 2022-12-30T145625.200.txt
 
 ###
-POST http://localhost:8080/quotes
+POST http://localhost:8080/api/v1/quotes
 Authorization: Bearer {{adminJwt}}
 Content-Type: application/json
 
@@ -31,9 +31,6 @@ Content-Type: application/json
   "why": "eaze"
 }
 
-<> 2023-01-07T154245.200.json
-<> 2023-01-07T153715.400.txt
-<> 2023-01-07T153638.400.json
 <> 2023-01-07T152702.400.json
 <> 2023-01-07T152652.400.json
 <> 2023-01-07T152524.400.json
@@ -42,29 +39,20 @@ Content-Type: application/json
 <> 2022-12-30T165111.500.json
 
 ### 
-GET http://localhost:8080/quotes
+GET http://localhost:8080/api/v1/quotes
 Authorization: Bearer {{adminJwt}}
 
-<> 2022-12-30T173433.200.json
-<> 2022-12-30T173410.200.json
-<> 2022-12-30T173023.200.json
 
 ###
-GET http://localhost:8080/test
+GET http://localhost:8080/api/v1/test
 Authorization: Bearer {{adminJwt}}
 
 <> 2023-01-07T151632.500.json
 
 ###
-GET http://localhost:8080/quotesRegistrations
+GET http://localhost:8080/api/v1/quotesRegistrations
 Authorization: Bearer {{token}}
 
-<> 2023-01-07T193438.200.json
-<> 2023-01-07T191614.200.json
-<> 2023-01-07T191555.200.json
-<> 2023-01-07T184410.200.json
-<> 2023-01-07T184226.200.json
-<> 2023-01-07T183705.200.json
 <> 2023-01-07T183409.500.json
 <> 2023-01-07T183334.200.json
 <> 2023-01-07T181855.500.json
@@ -76,22 +64,16 @@ Authorization: Bearer {{token}}
 
 ###
 
-POST http://localhost:8080/trade/propose/2
+POST http://localhost:8080/api/v1/trade/propose/2
 Authorization: Bearer {{adminJwt}}
-
-<> 2023-01-07T191601.500.json
-<> 2023-01-07T184312.500.json
 
 ###
 
-GET http://localhost:8080/quotesProposed
+GET http://localhost:8080/api/v1/quotesProposed
 Authorization: Bearer {{collectorJwt}}
 
-<> 2023-01-07T193515.200.json
-<> 2023-01-07T193505.200.json
-
 ### Créer un compte
-POST http://localhost:8080/api/auth/register
+POST http://localhost:8080/api/v1/auth/register
 Content-Type: application/json
 
 {

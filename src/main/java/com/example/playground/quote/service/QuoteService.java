@@ -1,11 +1,16 @@
-package com.example.playground;
+package com.example.playground.quote.service;
 
-import com.example.playground.feign.RandomQuote;
-import com.example.playground.feign.RandomQuoteClient;
+import com.example.playground.feign.rapidapi.RandomQuote;
+import com.example.playground.feign.rapidapi.RandomQuoteClient;
+import com.example.playground.quote.domain.Quote;
+import com.example.playground.quote.domain.QuoteRegistration;
+import com.example.playground.quote.repository.QuoteRegistrationRepository;
+import com.example.playground.quote.repository.QuoteRepository;
+import com.example.playground.user.User;
+import com.example.playground.user.UserRepository;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,9 +61,7 @@ public class QuoteService {
     }
 
     public Set<Quote> getAllQuotes() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User principal = (User) authentication.getPrincipal();
-        com.example.playground.User user = userRepository.findByUserName(principal.getUsername());
+        User user = getAuthenticatedUser();
 
         return userRepository.findAllQuotesByUser(user);
     }
@@ -77,5 +80,11 @@ public class QuoteService {
     public void acceptQuote(Long quoteId) {
 
         quoteRepository.findById(quoteId);
+    }
+
+    private User getAuthenticatedUser() {
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findByUserName(userName)
+                .orElseThrow(() -> new UsernameNotFoundException("user %s was not found in database".formatted(userName)));
     }
 }

@@ -1,6 +1,5 @@
-package com.example.playground.security.api;
+package com.example.playground.user.api.request;
 
-import com.example.playground.UserRole;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,12 +7,11 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
-public class RegisterRequest {
+public class LoginRequest {
     
     @NotBlank
     private String userName;
     @NotBlank
     private String password;
     
-    private UserRole role = UserRole.COLLECTOR;
 }

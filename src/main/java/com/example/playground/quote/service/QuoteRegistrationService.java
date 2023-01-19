@@ -1,15 +1,20 @@
-package com.example.playground;
+package com.example.playground.quote.service;
 
+import com.example.playground.quote.domain.QuoteRegistration;
+import com.example.playground.quote.repository.QuoteRegistrationRepository;
+import com.example.playground.user.User;
+import com.example.playground.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
-@Service
-@Transactional
 @Slf4j
+@Service
+@Transactional(readOnly = true)
 public class QuoteRegistrationService {
     private final QuoteRegistrationRepository quoteRegistrationRepository;
     private final UserRepository userRepository;
@@ -20,14 +25,18 @@ public class QuoteRegistrationService {
     }
 
     public Set<QuoteRegistration> getAllQuoteRegistrations() {
-        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByUserName(userName);
+        User user = getAuthenticatedUser();
         return quoteRegistrationRepository.findAllByUser(user);
     }
 
-    public Set<QuoteRegistration> getAllProposedQuotes() {
+    private User getAuthenticatedUser() {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByUserName(userName);
+        return userRepository.findByUserName(userName)
+                .orElseThrow(() -> new UsernameNotFoundException("user %s was not found in database".formatted(userName)));
+    }
+
+    public Set<QuoteRegistration> getAllProposedQuotes() {
+        User user = getAuthenticatedUser();
         return quoteRegistrationRepository.findAllProposedNotUser(user);
     }
 }

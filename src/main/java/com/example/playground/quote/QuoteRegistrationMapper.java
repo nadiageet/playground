@@ -1,4 +1,8 @@
-package com.example.playground;
+package com.example.playground.quote;
+
+import com.example.playground.quote.api.response.GetQuoteRegistrationsResponse;
+import com.example.playground.quote.api.response.QuoteResponse;
+import com.example.playground.quote.domain.QuoteRegistration;
 
 import java.util.List;
 import java.util.Set;

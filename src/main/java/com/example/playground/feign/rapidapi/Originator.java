@@ -1,4 +1,4 @@
-package com.example.playground.feign;
+package com.example.playground.feign.rapidapi;
 
 public class Originator {
     public int id;

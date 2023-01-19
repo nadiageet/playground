@@ -1,4 +1,4 @@
-package com.example.playground;
+package com.example.playground.quote.domain;
 
 
 import lombok.Getter;

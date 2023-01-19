@@ -1,7 +1,7 @@
 package com.example.playground.security;
 
-import com.example.playground.User;
-import com.example.playground.UserRepository;
+import com.example.playground.user.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
+@Slf4j
 public class AuthentificationService implements UserDetailsService {
     
     
@@ -22,8 +23,9 @@ public class AuthentificationService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        User user = userRepository.findByUserName(username);
-        
-        return UserSecurityMapper.map(user);
+        return userRepository.findByUserName(username)
+                .map(UserSecurityMapper::map)
+                .orElseThrow(() -> new UsernameNotFoundException("user %s was not found".formatted(username)));
     }
+
 }

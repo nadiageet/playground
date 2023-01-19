@@ -1,5 +1,6 @@
-package com.example.playground;
+package com.example.playground.user;
 
+import com.example.playground.quote.domain.QuoteRegistration;
 import lombok.Getter;
 import lombok.Setter;
 

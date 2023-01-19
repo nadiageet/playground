@@ -34,15 +34,16 @@ public class JwtFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String headerAuth = request.getHeader("Authorization");
 
+        log.debug("intercepted request received : {}", request.getRequestURI());
         if (headerAuth == null) {
             // if no Authorization header, do not try to authenticate with JWT
-            log.debug("no jwt token found in request");
+            log.debug("no jwt token found in request, continuing security filter chain");
             filterChain.doFilter(request, response);
             return;
         }
 
         try {
-            final String jwt = parseJwt(headerAuth);
+            final String jwt = extractTokenFromAuthorizationHeader(headerAuth);
             log.debug("jwt token found in request");
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
                 String username = jwtUtils.getUserNameFromJwtToken(jwt);
@@ -61,11 +62,11 @@ public class JwtFilter extends OncePerRequestFilter {
                 userDetails, null, userDetails.getAuthorities());
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-        log.debug("authenticating user {}", username);
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        log.debug("user {} authenticated", username);
     }
 
-    private String parseJwt(String headerAuth) {
+    private String extractTokenFromAuthorizationHeader(String headerAuth) {
         if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
             return headerAuth.substring(7);
         } else {

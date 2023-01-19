@@ -1,6 +1,6 @@
-package com.example.playground.feign;
+package com.example.playground.feign.rapidapi;
 
-import com.example.playground.properties.RandomQuoteProperties;
+import com.example.playground.feign.rapidapi.properties.RandomQuoteProperties;
 import feign.RequestInterceptor;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Bean;

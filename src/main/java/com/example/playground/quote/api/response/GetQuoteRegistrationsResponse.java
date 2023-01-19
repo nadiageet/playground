@@ -1,4 +1,4 @@
-package com.example.playground;
+package com.example.playground.quote.api.response;
 
 import java.util.List;
 

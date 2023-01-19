@@ -1,4 +1,4 @@
-package com.example.playground;
+package com.example.playground.quote.api.request;
 
 import lombok.Getter;
 import lombok.Setter;

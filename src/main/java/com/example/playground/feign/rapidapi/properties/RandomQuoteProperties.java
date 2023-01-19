@@ -1,4 +1,4 @@
-package com.example.playground.properties;
+package com.example.playground.feign.rapidapi.properties;
 
 import lombok.Getter;
 import lombok.Setter;

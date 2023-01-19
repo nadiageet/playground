@@ -1,8 +1,11 @@
-package com.example.playground.security.api;
+package com.example.playground.user.api;
 
 
-import com.example.playground.UserRepository;
 import com.example.playground.security.jwt.JwtUtils;
+import com.example.playground.user.UserRepository;
+import com.example.playground.user.api.request.LoginRequest;
+import com.example.playground.user.api.request.RegisterRequest;
+import com.example.playground.user.api.response.JwtResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,7 +14,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.Set;
@@ -19,7 +25,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 public class AuthController {
     
     private final AuthenticationManager authenticationManager;
@@ -63,11 +69,12 @@ public class AuthController {
 
     @PostMapping(value = "/register")
     public void registerUser(@RequestBody @Valid RegisterRequest registerRequest) {
-        var appUser = new com.example.playground.User();
+        var appUser = new com.example.playground.user.User();
         appUser.setUserName(registerRequest.getUserName());
         appUser.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         appUser.setRoles(Set.of(registerRequest.getRole()));
-        
+
+        log.info("user {} was created", registerRequest.getUserName());
         userRepository.save(appUser);
     }
     

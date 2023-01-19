@@ -1,4 +1,4 @@
-package com.example.playground.feign;
+package com.example.playground.feign.rapidapi;
 
 import java.util.ArrayList;
 import java.util.List;
