@@ -1,6 +1,5 @@
 package com.example.playground.quote.api;
 
-import com.example.playground.exception.ApplicationException;
 import com.example.playground.feign.rapidapi.RandomQuoteClient;
 import com.example.playground.quote.QuoteRegistrationMapper;
 import com.example.playground.quote.api.request.GenerateQuoteRequest;
@@ -18,9 +17,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.util.Locale;
 import java.util.Set;
 
 // TODO: 18/01/2023  split this controller into multiple domains
@@ -64,16 +60,7 @@ public class QuoteController {
         quoteService.generateQuote(generateQuoteRequest.getGenerationNumber());
     }
 
-    record ErrorRecord(String message, OffsetDateTime dateTime) {
 
-    }
-
-    // TODO: 19/01/2023 extract to an other controller
-    @ExceptionHandler(ApplicationException.class)
-    public ErrorRecord handle(ApplicationException e, Locale locale) {
-        log.info("exception catch here with locale {}", locale);
-        return new ErrorRecord(e.getMessage(), OffsetDateTime.now(ZoneId.of("Europe/Paris")));
-    }
 
     @GetMapping("/quotes")
     @ApiModelProperty("Get all the quotes from database owned by the requester")

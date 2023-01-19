@@ -18,11 +18,12 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
-infra:
-  quote:
-    url: https://quotes15.p.rapidapi.com
-    api_key: bf6b2580acmsh746c8a3455d69ecp18d011jsn2612d1a1d48a
-    host: quotes15.p.rapidapi.com
+services:
+  rapid-api:
+    quotes:
+      url: https://quotes15.p.rapidapi.com
+      api_key: bf6b2580acmsh746c8a3455d69ecp18d011jsn2612d1a1d48a
+      host: quotes15.p.rapidapi.com
 
 feign:
   client:

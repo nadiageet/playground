@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @FeignClient(
-        url = "${infra.quote.url:NO_VALID_URL}",
+        url = "${services.rapid-api.quotes.url:NO_VALID_URL}",
         name = "quote",
         decode404 = true,
         configuration = RandomQuoteClient.Configuration.class
