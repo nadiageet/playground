@@ -14,10 +14,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Contact;
-import springfox.documentation.service.HttpAuthenticationScheme;
+import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 
 import java.util.ArrayList;
@@ -30,6 +29,8 @@ import static springfox.documentation.service.HttpAuthenticationScheme.JWT_BEARE
 @Configuration
 public class SpringFoxConfig {
 
+    public static final String AUTHORIZATION_SCHEME_NAME = "JWT";
+
     private ApiInfo apiInfo() {
         return new ApiInfo("Quote Collector",
                 "APIs for the App",
@@ -41,14 +42,25 @@ public class SpringFoxConfig {
                 Collections.emptyList());
     }
 
+    private SecurityContext securityContext() {
+        return SecurityContext.builder().securityReferences(defaultAuth()).build();
+    }
+
+    private List<SecurityReference> defaultAuth() {
+        AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
+        AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
+        authorizationScopes[0] = authorizationScope;
+        return List.of(new SecurityReference(AUTHORIZATION_SCHEME_NAME, authorizationScopes));
+    }
+
     @Bean
     public Docket api() {
-        HttpAuthenticationScheme authenticationScheme = JWT_BEARER_BUILDER
-                .name("jwt").build();
+        HttpAuthenticationScheme authenticationScheme = JWT_BEARER_BUILDER.name(AUTHORIZATION_SCHEME_NAME).build();
 
         return new Docket(DocumentationType.OAS_30)
                 .apiInfo(apiInfo())
                 .securitySchemes(Collections.singletonList(authenticationScheme))
+                .securityContexts(List.of(securityContext()))
                 .select()
                 .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.ant("/api/**"))

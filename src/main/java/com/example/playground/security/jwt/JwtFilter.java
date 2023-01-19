@@ -30,18 +30,21 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
-        String headerAuth = request.getHeader("Authorization");
+    private static void debugHeaders(HttpServletRequest request) {
         Enumeration<String> headerNames = request.getHeaderNames();
 
         if (headerNames != null) {
             while (headerNames.hasMoreElements()) {
-                System.out.println("Header: " + request.getHeader(headerNames.nextElement()));
+                log.debug("Header: {}", request.getHeader(headerNames.nextElement()));
             }
         }
+    }
 
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        String headerAuth = request.getHeader("Authorization");
+        debugHeaders(request);
 
         log.debug("intercepted request received : {}", request.getRequestURI());
         if (headerAuth == null) {
@@ -62,7 +65,7 @@ public class JwtFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             logger.error("Cannot set user authentication", e);
         }
-
+        filterChain.doFilter(request, response);
     }
 
     private void authenticate(HttpServletRequest request, String username) {
