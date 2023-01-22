@@ -1,7 +1,9 @@
 package com.example.playground.quote.api;
 
+import com.example.playground.exception.ApplicationException;
 import com.example.playground.feign.rapidapi.RandomQuoteClient;
 import com.example.playground.quote.QuoteRegistrationMapper;
+import com.example.playground.quote.api.request.CreateQuoteRequest;
 import com.example.playground.quote.api.request.GenerateQuoteRequest;
 import com.example.playground.quote.api.response.GetQuoteRegistrationsResponse;
 import com.example.playground.quote.domain.Quote;
@@ -39,7 +41,7 @@ public class QuoteController {
     }
 
 
-    @GetMapping("/quote")
+    @GetMapping("/quote/random")
     @PreAuthorize("hasRole('ADMIN')")
     @ApiModelProperty("Get a random quote content from rapid API")
     public String getRandomQuoteAPI() {
@@ -52,17 +54,24 @@ public class QuoteController {
         }
     }
 
-    @PostMapping("/quotes")
+    @PostMapping("/quote/random")
     @PreAuthorize("hasRole('ADMIN')")
     @ApiModelProperty("Generate a random quote from rapid API and save it")
-    public void createQuote(@RequestBody @Valid GenerateQuoteRequest generateQuoteRequest) {
+    public void createRandomQuote(@RequestBody @Valid GenerateQuoteRequest generateQuoteRequest) {
         log.debug("request received to generate random quote from rapid API and save it to the database");
         quoteService.generateQuote(generateQuoteRequest.getGenerationNumber());
     }
 
+    @PostMapping("/quote")
+    @PreAuthorize("hasRole('ADMIN')")
+//    @Valid valider le DTO
+    public void createQuote(@RequestBody @Valid CreateQuoteRequest content){
+        quoteService.createQuote(content.getContent());
+    }
+    
 
 
-    @GetMapping("/quotes")
+    @GetMapping("/quote")
     @ApiModelProperty("Get all the quotes from database owned by the requester")
     public Set<Quote> getQuotesForAuthenticatedUser() {
         log.debug("request received to get all the quotes owned by the requester");

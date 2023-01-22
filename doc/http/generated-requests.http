@@ -81,3 +81,15 @@ Content-Type: application/json
   "password": "pass",
   "role": "ADMIN"
 }
+
+###
+
+[
+{
+  "isPossessed": true/false,
+"content": "..." if possessed
+"id" : 1
+"originator": "admin",
+}
+
+]

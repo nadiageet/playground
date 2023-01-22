@@ -10,6 +10,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 public class QuoteRegistration {
+    
     @Id
     @GeneratedValue
     private Long id;

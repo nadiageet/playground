@@ -54,7 +54,6 @@ public class QuoteService {
     public Quote generateQuoteFromAPI() {
         RandomQuote randomQuote = randomQuoteClient.getRandomQuote();
         Quote quote = new Quote();
-        quote.setId((long) randomQuote.id);
         quote.setContent(randomQuote.content);
         quote.setOriginator(randomQuote.originator.name);
         return quoteRepository.save(quote);
@@ -86,5 +85,12 @@ public class QuoteService {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByUserName(userName)
                 .orElseThrow(() -> new UsernameNotFoundException("user %s was not found in database".formatted(userName)));
+    }
+
+    public void createQuote(String content) {
+        Quote quote = new Quote();
+        quote.setContent(content);
+        quote.setOriginator(SecurityContextHolder.getContext().getAuthentication().getName());
+        quoteRepository.save(quote);
     }
 }

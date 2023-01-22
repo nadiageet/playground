@@ -1,6 +1,9 @@
 management.endpoints.web.exposure.include: '*'
 
 spring:
+  sleuth:
+    jdbc:
+      enabled: false
   output:
     ansi:
       enabled: always
@@ -35,5 +38,6 @@ feign:
 logging.level:
   # whole application
   com.example.playground: DEBUG
+  com.example.playground.security: INFO
   # datasource proxy showing sql requests
   net.ttddyy.dsproxy.listener: debug
