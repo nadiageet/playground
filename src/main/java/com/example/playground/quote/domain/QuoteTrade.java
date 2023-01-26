@@ -12,7 +12,7 @@ public class QuoteTrade {
 
     @Id
     @GeneratedValue
-    private Long quoteTradeId;
+    private Long id;
     @ManyToOne
     private User userInitiator;
 

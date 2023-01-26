@@ -29,7 +29,7 @@ public class User {
             orphanRemoval = true
     )
     private Set<QuoteRegistration> quoteRegistrations = new HashSet<>();
-    
+
     @ElementCollection(targetClass = UserRole.class)
     @CollectionTable
     @Enumerated(EnumType.STRING)
@@ -40,5 +40,10 @@ public class User {
         quoteRegistration.setUser(this);
         quoteRegistrations.add(quoteRegistration);
     }
-    
+
+    public void removeRegistration(QuoteRegistration quoteRegistration) {
+        quoteRegistration.setUser(null);
+        quoteRegistrations.remove(quoteRegistration);
+    }
+
 }

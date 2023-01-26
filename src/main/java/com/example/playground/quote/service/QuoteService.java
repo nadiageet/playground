@@ -6,6 +6,7 @@ import com.example.playground.feign.rapidapi.RandomQuoteClient;
 import com.example.playground.quote.domain.Quote;
 import com.example.playground.quote.domain.QuoteRegistration;
 import com.example.playground.quote.domain.QuoteTrade;
+import com.example.playground.quote.domain.TradeStatus;
 import com.example.playground.quote.repository.QuoteRegistrationRepository;
 import com.example.playground.quote.repository.QuoteRepository;
 import com.example.playground.quote.repository.QuoteToTradeRepository;
@@ -110,5 +111,31 @@ public class QuoteService {
         quoteToTrade.setQuoteRegistration(quoteRegistration);
         quoteToTradeRepository.save(quoteToTrade);
 
+    }
+
+    public void updateTrade(Long tradeId, TradeStatus status) {
+        QuoteTrade trade = quoteToTradeRepository.getReferenceById(tradeId);
+        QuoteRegistration quoteRegistration = trade.getQuoteRegistration();
+        User authenticatedUser = getAuthenticatedUser();
+        if (!quoteRegistration.getUser().equals(authenticatedUser)) {
+            throw new ApplicationException("forbidden");
+        }
+        if (trade.getStatus() != TradeStatus.WAITING) {
+            throw new ApplicationException("not_waiting");
+        }
+
+        trade.setStatus(status);
+        if (status == TradeStatus.ACCEPTED) {
+
+            // nouvelle acquisition
+            QuoteRegistration newRegistration = new QuoteRegistration();
+            newRegistration.setQuote(quoteRegistration.getQuote());
+            newRegistration.setProposedQuote(false);
+            trade.getUserInitiator().addRegistration(newRegistration);
+
+            // enlever l'ancienne
+            authenticatedUser.removeRegistration(quoteRegistration);
+
+        }
     }
 }

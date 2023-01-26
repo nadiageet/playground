@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class TradeQuote {
+public class CreateQuoteTradeRequest {
 
     private Long quoteRegistrationId;
 

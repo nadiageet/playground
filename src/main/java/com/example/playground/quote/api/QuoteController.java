@@ -3,8 +3,9 @@ package com.example.playground.quote.api;
 import com.example.playground.feign.rapidapi.RandomQuoteClient;
 import com.example.playground.quote.QuoteRegistrationMapper;
 import com.example.playground.quote.api.request.CreateQuoteRequest;
+import com.example.playground.quote.api.request.CreateQuoteTradeRequest;
 import com.example.playground.quote.api.request.GenerateQuoteRequest;
-import com.example.playground.quote.api.request.TradeQuote;
+import com.example.playground.quote.api.request.UpdateQuoteRequest;
 import com.example.playground.quote.api.response.GetQuoteRegistrationsResponse;
 import com.example.playground.quote.domain.Quote;
 import com.example.playground.quote.domain.QuoteRegistration;
@@ -104,13 +105,16 @@ public class QuoteController {
 
     // TODO: 26/01/2023 API pour lancer un echange
     @PostMapping("/trade")
-    public void offerQuote(@RequestBody TradeQuote tradeQuote) {
+    public void offerQuote(@RequestBody CreateQuoteTradeRequest createQuoteTradeRequest) {
 
-        quoteService.tradeQuote(tradeQuote.getQuoteRegistrationId());
+        quoteService.tradeQuote(createQuoteTradeRequest.getQuoteRegistrationId());
         // TODO: 19/01/2023 NOT IMPLEMENTED
     }
 
-
+    @PutMapping("/trade/{tradeId}")
+    public void updateRrade(@PathVariable Long tradeId, @RequestBody UpdateQuoteRequest updateQuoteRequest) {
+        quoteService.updateTrade(tradeId, updateQuoteRequest.getStatus());
+    }
     // TODO: 26/01/2023 api pour mettre a jour l'echange
 
 }
