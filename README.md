@@ -15,11 +15,11 @@ API à redéfinir en fonction des objectifs ci dessous
 
 ### Objectifs principaux 
 - Pour les users normaux :
-  - Une page montrant toutes les citations possédées et les autres en grisées afin de voir combien il en manque.
+  - [x] Une page montrant toutes les citations possédées et les autres en grisées afin de voir combien il en manque.
   - [x] Une page permettant de gagner une citation aléatoire parmis celle existantes.
-  - Une page permettant de proposer des citations à l'échange
-  - Une page permettant de voir les citations échangeables par les autres
-  - permettre de demander un échange 
+  - [x] Une page permettant de proposer des citations à l'échange
+  - [x] Une page permettant de voir les citations échangeables par les autres
+  - permettre de demander un échange
   - permettre d'accepter ou refuser un échange
   - Une page récapitulant les échanges effectués
 - Pour les admins :

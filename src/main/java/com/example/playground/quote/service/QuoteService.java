@@ -1,11 +1,14 @@
 package com.example.playground.quote.service;
 
+import com.example.playground.exception.ApplicationException;
 import com.example.playground.feign.rapidapi.RandomQuote;
 import com.example.playground.feign.rapidapi.RandomQuoteClient;
 import com.example.playground.quote.domain.Quote;
 import com.example.playground.quote.domain.QuoteRegistration;
+import com.example.playground.quote.domain.QuoteTrade;
 import com.example.playground.quote.repository.QuoteRegistrationRepository;
 import com.example.playground.quote.repository.QuoteRepository;
+import com.example.playground.quote.repository.QuoteToTradeRepository;
 import com.example.playground.user.User;
 import com.example.playground.user.UserRepository;
 import org.springframework.scheduling.annotation.Async;
@@ -30,12 +33,15 @@ public class QuoteService {
 
     private final QuoteRegistrationRepository quoteRegistrationRepository;
 
+    private final QuoteToTradeRepository quoteToTradeRepository;
 
-    public QuoteService(RandomQuoteClient randomQuoteClient, QuoteRepository quoteRepository, UserRepository userRepository, QuoteRegistrationRepository quoteRegistrationRepository) {
+
+    public QuoteService(RandomQuoteClient randomQuoteClient, QuoteRepository quoteRepository, UserRepository userRepository, QuoteRegistrationRepository quoteRegistrationRepository, QuoteToTradeRepository quoteToTradeRepository) {
         this.randomQuoteClient = randomQuoteClient;
         this.quoteRepository = quoteRepository;
         this.userRepository = userRepository;
         this.quoteRegistrationRepository = quoteRegistrationRepository;
+        this.quoteToTradeRepository = quoteToTradeRepository;
     }
 
     @Async
@@ -76,10 +82,6 @@ public class QuoteService {
     }
 
 
-    public void acceptQuote(Long quoteId) {
-
-        quoteRepository.findById(quoteId);
-    }
 
     private User getAuthenticatedUser() {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -92,5 +94,21 @@ public class QuoteService {
         quote.setContent(content);
         quote.setOriginator(SecurityContextHolder.getContext().getAuthentication().getName());
         quoteRepository.save(quote);
+    }
+
+    public void tradeQuote(Long quoteRegistrationId) {
+        QuoteRegistration quoteRegistration = quoteRegistrationRepository.findById(quoteRegistrationId)
+                .orElseThrow(() -> new ApplicationException());
+
+        if (!quoteRegistration.isProposedQuote()) {
+            throw new ApplicationException("tradeNotProPosed");
+        }
+
+        QuoteTrade quoteToTrade = new QuoteTrade();
+        User authenticatedUser = getAuthenticatedUser();
+        quoteToTrade.setUserInitiator(authenticatedUser);
+        quoteToTrade.setQuoteRegistration(quoteRegistration);
+        quoteToTradeRepository.save(quoteToTrade);
+
     }
 }
