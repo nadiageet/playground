@@ -105,16 +105,14 @@ public class QuoteController {
 
     // TODO: 26/01/2023 API pour lancer un echange
     @PostMapping("/trade")
-    public void offerQuote(@RequestBody CreateQuoteTradeRequest createQuoteTradeRequest) {
+    public void offerQuote(@RequestBody CreateQuoteTradeRequest createQuoteTradeRequest ) {
 
-        quoteService.tradeQuote(createQuoteTradeRequest.getQuoteRegistrationId());
-        // TODO: 19/01/2023 NOT IMPLEMENTED
+        quoteService.tradeQuote(createQuoteTradeRequest.getQuoteRegistrationId(), createQuoteTradeRequest.getQuoteInitiatorId());
     }
 
     @PutMapping("/trade/{tradeId}")
     public void updateRrade(@PathVariable Long tradeId, @RequestBody UpdateQuoteRequest updateQuoteRequest) {
         quoteService.updateTrade(tradeId, updateQuoteRequest.getStatus());
     }
-    // TODO: 26/01/2023 api pour mettre a jour l'echange
 
 }

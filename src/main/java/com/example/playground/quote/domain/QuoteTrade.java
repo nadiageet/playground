@@ -4,6 +4,7 @@ import com.example.playground.user.User;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Optional;
 
 @Entity
 @Data
@@ -17,9 +18,22 @@ public class QuoteTrade {
     private User userInitiator;
 
     @ManyToOne
-    private QuoteRegistration quoteRegistration;
+    private User userValidator;
+
+    // TODO: 27/01/2023 Add a quote proposed by initiator 
+
+    // TODO: 27/01/2023 Quote a la place 
+    // TODO: 27/01/2023 Ajouter l'utilisateur avec qui on echange qui detient la quote
+    @ManyToOne
+    private Quote quote;
+    
+    @ManyToOne
+    private Quote quoteInitiator;
 
     @Enumerated(EnumType.STRING)
     private TradeStatus status = TradeStatus.WAITING;
 
+    public Optional<Quote> getQuoteInitiator() {
+        return Optional.ofNullable(quoteInitiator);
+    }
 }

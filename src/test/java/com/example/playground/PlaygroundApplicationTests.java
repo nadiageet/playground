@@ -61,7 +61,7 @@ class PlaygroundApplicationTests {
     }
 
     @Test
-    @WithMockUser(roles = "ADMIN", username = "guigui")
+    @WithMockUser(roles = "ADMIN", username = "nadia")
     void getContent() throws Exception {
 
         // GIVEN
@@ -72,7 +72,7 @@ class PlaygroundApplicationTests {
                 .thenReturn(response);
 
         // WHEN
-        String quote = mockMvc.perform(get("/api/v1/quote"))
+        String quote = mockMvc.perform(get("/api/v1/quote/random"))
                 // THEN
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
@@ -114,10 +114,10 @@ class PlaygroundApplicationTests {
         QuoteTrade trade = entityManager.createQuery("select t from QuoteTrade t", QuoteTrade.class)
                 .getSingleResult();
 
-        assertThat(trade.getQuoteRegistration()).isSameAs(quoteRegistration);
+        assertThat(trade.getQuote()).isSameAs(quote);
         assertThat(trade.getUserInitiator()).isSameAs(nadia);
         assertThat(trade.getStatus()).isEqualTo(TradeStatus.WAITING);
-        assertThat(trade.getQuoteRegistration().getQuote().getContent()).isEqualTo("le repas du mmidi été bon");
+        assertThat(trade.getQuote().getContent()).isEqualTo("le repas du mmidi été bon");
 
     }
 
@@ -142,8 +142,9 @@ class PlaygroundApplicationTests {
         entityManager.persist(guillaume);
 
         QuoteTrade trade = new QuoteTrade();
+        trade.setUserValidator(nadia);
         trade.setUserInitiator(guillaume);
-        trade.setQuoteRegistration(quoteRegistration);
+        trade.setQuote(quote);
         entityManager.persist(trade);
         // WHEN
         mockMvc.perform(put("/api/v1/trade/" + trade.getId())
@@ -159,10 +160,12 @@ class PlaygroundApplicationTests {
 
         entityManager.flush();
 
-        assertThat(trade.getQuoteRegistration()).isSameAs(quoteRegistration);
+        assertThat(trade.getQuote()).isSameAs(quote);
         assertThat(trade.getUserInitiator()).isSameAs(guillaume);
         assertThat(trade.getStatus()).isEqualTo(TradeStatus.ACCEPTED);
-        assertThat(trade.getQuoteRegistration()).isNull();
+
+        assertThat(trade.getUserValidator().getQuoteRegistrations())
+                .noneMatch(r -> r.getQuote().equals(quote));
 
         QuoteRegistration newQuoteRegistration = entityManager.createQuery("select qr from QuoteRegistration qr", QuoteRegistration.class)
                 .getSingleResult();

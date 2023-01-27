@@ -97,7 +97,7 @@ public class QuoteService {
         quoteRepository.save(quote);
     }
 
-    public void tradeQuote(Long quoteRegistrationId) {
+    public void tradeQuote(Long quoteRegistrationId, Long quoteInitiatorId) {
         QuoteRegistration quoteRegistration = quoteRegistrationRepository.findById(quoteRegistrationId)
                 .orElseThrow(() -> new ApplicationException());
 
@@ -105,19 +105,32 @@ public class QuoteService {
             throw new ApplicationException("tradeNotProPosed");
         }
 
-        QuoteTrade quoteToTrade = new QuoteTrade();
+        QuoteTrade trade = new QuoteTrade();
         User authenticatedUser = getAuthenticatedUser();
-        quoteToTrade.setUserInitiator(authenticatedUser);
-        quoteToTrade.setQuoteRegistration(quoteRegistration);
-        quoteToTradeRepository.save(quoteToTrade);
+        trade.setUserInitiator(authenticatedUser);
+        trade.setQuote(quoteRegistration.getQuote());
+        trade.setUserValidator(quoteRegistration.getUser());
+        
+        if(quoteInitiatorId != null){
+            Quote quoteInitiator = quoteRepository.getReferenceById(quoteInitiatorId);
+            boolean userPossedQuote = trade.getUserInitiator().getQuoteRegistrations()
+                    .stream().map(QuoteRegistration::getQuote)
+                    .anyMatch(quote -> quote.equals(quoteInitiator));
+            if(!userPossedQuote){
+                throw new ApplicationException("forbidden");
+            }
+            trade.setQuoteInitiator(quoteInitiator);
+        }
 
+        quoteToTradeRepository.save(trade);
     }
 
     public void updateTrade(Long tradeId, TradeStatus status) {
         QuoteTrade trade = quoteToTradeRepository.getReferenceById(tradeId);
-        QuoteRegistration quoteRegistration = trade.getQuoteRegistration();
+        
+        Quote quote = trade.getQuote();
         User authenticatedUser = getAuthenticatedUser();
-        if (!quoteRegistration.getUser().equals(authenticatedUser)) {
+        if (!trade.getUserValidator().equals(authenticatedUser)) {
             throw new ApplicationException("forbidden");
         }
         if (trade.getStatus() != TradeStatus.WAITING) {
@@ -128,14 +141,26 @@ public class QuoteService {
         if (status == TradeStatus.ACCEPTED) {
 
             // nouvelle acquisition
-            QuoteRegistration newRegistration = new QuoteRegistration();
-            newRegistration.setQuote(quoteRegistration.getQuote());
-            newRegistration.setProposedQuote(false);
-            trade.getUserInitiator().addRegistration(newRegistration);
+            addQuoteToUser(quote, trade.getUserInitiator());
 
             // enlever l'ancienne
-            authenticatedUser.removeRegistration(quoteRegistration);
-
+            removeQuoteFromUser(quote, trade.getUserValidator());
         }
+    }
+
+    private static void addQuoteToUser(Quote quote, User userInitiator) {
+        QuoteRegistration newRegistration = new QuoteRegistration();
+        newRegistration.setQuote(quote);
+        newRegistration.setProposedQuote(false);
+        userInitiator.addRegistration(newRegistration);
+    }
+
+    private void removeQuoteFromUser(Quote quote, User user) {
+
+        QuoteRegistration q = user.getQuoteRegistrations().stream()
+                .filter(quoteRegistration -> quoteRegistration.getQuote().equals(quote))
+                .findAny()
+                .orElseThrow();
+        user.removeRegistration(q);
     }
 }

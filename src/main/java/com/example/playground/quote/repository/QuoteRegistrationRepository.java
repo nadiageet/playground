@@ -19,4 +19,6 @@ public interface QuoteRegistrationRepository extends JpaRepository<QuoteRegistra
                  join fetch registrations.quote q where registrations.isProposedQuote is true and u <> :user
             """)
     Set<QuoteRegistration> findAllProposedNotUser(User user);
+
+    // TODO: 27/01/2023 find by user and quote 
 }

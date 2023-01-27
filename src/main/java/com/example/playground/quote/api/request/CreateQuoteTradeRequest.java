@@ -8,5 +8,6 @@ import lombok.Setter;
 public class CreateQuoteTradeRequest {
 
     private Long quoteRegistrationId;
+    private Long quoteInitiatorId;
 
 }
