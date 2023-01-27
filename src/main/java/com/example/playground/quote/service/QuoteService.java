@@ -145,6 +145,14 @@ public class QuoteService {
 
             // enlever l'ancienne
             removeQuoteFromUser(quote, trade.getUserValidator());
+
+            if(trade.getQuoteInitiator().isPresent()){
+                // nouvelle acquisition
+                addQuoteToUser(quote, trade.getUserValidator());
+
+                // enlever l'ancienne
+                removeQuoteFromUser(quote, trade.getUserInitiator());
+            }
         }
     }
 
