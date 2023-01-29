@@ -25,7 +25,7 @@ public class QuoteTrade {
     // TODO: 27/01/2023 Quote a la place 
     // TODO: 27/01/2023 Ajouter l'utilisateur avec qui on echange qui detient la quote
     @ManyToOne
-    private Quote quote;
+    private Quote quoteValidator;
     
     @ManyToOne
     private Quote quoteInitiator;

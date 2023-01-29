@@ -108,7 +108,7 @@ public class QuoteService {
         QuoteTrade trade = new QuoteTrade();
         User authenticatedUser = getAuthenticatedUser();
         trade.setUserInitiator(authenticatedUser);
-        trade.setQuote(quoteRegistration.getQuote());
+        trade.setQuoteValidator(quoteRegistration.getQuote());
         trade.setUserValidator(quoteRegistration.getUser());
         
         if(quoteInitiatorId != null){
@@ -128,7 +128,7 @@ public class QuoteService {
     public void updateTrade(Long tradeId, TradeStatus status) {
         QuoteTrade trade = quoteToTradeRepository.getReferenceById(tradeId);
         
-        Quote quote = trade.getQuote();
+        Quote quoteValidator = trade.getQuoteValidator();
         User authenticatedUser = getAuthenticatedUser();
         if (!trade.getUserValidator().equals(authenticatedUser)) {
             throw new ApplicationException("forbidden");
@@ -141,18 +141,20 @@ public class QuoteService {
         if (status == TradeStatus.ACCEPTED) {
 
             // nouvelle acquisition
-            addQuoteToUser(quote, trade.getUserInitiator());
+            addQuoteToUser(quoteValidator, trade.getUserInitiator());
 
             // enlever l'ancienne
-            removeQuoteFromUser(quote, trade.getUserValidator());
+            removeQuoteFromUser(quoteValidator, trade.getUserValidator());
 
-            if(trade.getQuoteInitiator().isPresent()){
+            trade.getQuoteInitiator().ifPresent(quoteInitiator -> {
                 // nouvelle acquisition
-                addQuoteToUser(quote, trade.getUserValidator());
+                addQuoteToUser(quoteInitiator, trade.getUserValidator());
 
                 // enlever l'ancienne
-                removeQuoteFromUser(quote, trade.getUserInitiator());
-            }
+                removeQuoteFromUser(quoteInitiator, trade.getUserInitiator());
+            });
+        } else if (status == TradeStatus.REFUSED) {
+            trade.setStatus(TradeStatus.REFUSED);
         }
     }
 

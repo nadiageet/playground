@@ -9,6 +9,8 @@ import com.example.playground.quote.domain.TradeStatus;
 import com.example.playground.user.User;
 import com.example.playground.user.UserRole;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,6 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 class PlaygroundApplicationTests {
 
+    public static final String GUIGUI = "guigui";
     @Autowired
     MockMvc mockMvc;
 
@@ -114,10 +118,10 @@ class PlaygroundApplicationTests {
         QuoteTrade trade = entityManager.createQuery("select t from QuoteTrade t", QuoteTrade.class)
                 .getSingleResult();
 
-        assertThat(trade.getQuote()).isSameAs(quote);
+        assertThat(trade.getQuoteValidator()).isSameAs(quote);
         assertThat(trade.getUserInitiator()).isSameAs(nadia);
         assertThat(trade.getStatus()).isEqualTo(TradeStatus.WAITING);
-        assertThat(trade.getQuote().getContent()).isEqualTo("le repas du mmidi été bon");
+        assertThat(trade.getQuoteValidator().getContent()).isEqualTo("le repas du mmidi été bon");
 
     }
 
@@ -144,7 +148,7 @@ class PlaygroundApplicationTests {
         QuoteTrade trade = new QuoteTrade();
         trade.setUserValidator(nadia);
         trade.setUserInitiator(guillaume);
-        trade.setQuote(quote);
+        trade.setQuoteValidator(quote);
         entityManager.persist(trade);
         // WHEN
         mockMvc.perform(put("/api/v1/trade/" + trade.getId())
@@ -160,7 +164,7 @@ class PlaygroundApplicationTests {
 
         entityManager.flush();
 
-        assertThat(trade.getQuote()).isSameAs(quote);
+        assertThat(trade.getQuoteValidator()).isSameAs(quote);
         assertThat(trade.getUserInitiator()).isSameAs(guillaume);
         assertThat(trade.getStatus()).isEqualTo(TradeStatus.ACCEPTED);
 
@@ -171,6 +175,158 @@ class PlaygroundApplicationTests {
                 .getSingleResult();
 
         assertThat(newQuoteRegistration.getQuote().getContent()).isEqualTo("le repas du mmidi été bon");
+
+    }
+
+    @Nested
+    @DisplayName("when guillaume and nadia trade together two quotes")
+    class HavingATwoWayTrade {
+
+        private User guillaume;
+        private QuoteRegistration quoteRegistrationValidator;
+        private Quote quoteValidator;
+        private Quote quoteInitiator;
+        private QuoteRegistration quoteRegistrationInitiator;
+
+        @BeforeEach
+        void setUp() {
+            guillaume = new User();
+            guillaume.setUserName(GUIGUI);
+            guillaume.setRoles(Set.of(UserRole.COLLECTOR));
+            guillaume.setPassword(passwordEncoder.encode("pass"));
+
+            quoteValidator = new Quote();
+            quoteValidator.setContent("le repas du midi été bon");
+            quoteValidator.setOriginator(guillaume.getUserName());
+            entityManager.persist(quoteValidator);
+
+            quoteRegistrationValidator = new QuoteRegistration();
+            quoteRegistrationValidator.setQuote(quoteValidator);
+            quoteRegistrationValidator.setProposedQuote(true);
+            guillaume.addRegistration(quoteRegistrationValidator);
+
+            quoteInitiator = new Quote();
+            quoteInitiator.setContent("le repas du midi été mouvementé");
+            entityManager.persist(quoteInitiator);
+
+            quoteRegistrationInitiator = new QuoteRegistration();
+            quoteRegistrationInitiator.setQuote(quoteInitiator);
+            quoteRegistrationInitiator.setProposedQuote(true);
+            nadia.addRegistration(quoteRegistrationInitiator);
+
+            entityManager.persist(nadia);
+
+            entityManager.persist(guillaume);
+        }
+
+        @Test
+        @WithMockUser(roles = "ADMIN", username = "nadia")
+        @DisplayName("on trade creation should start trade")
+        void tradeQuoteInTooWay() throws Exception {
+            // GIVEN
+
+            // WHEN
+            mockMvc.perform(post("/api/v1/trade")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                                    {
+                                    "quoteRegistrationId": "%s",
+                                    "quoteInitiatorId": "%s"
+                                    }
+                                    """.formatted(quoteRegistrationValidator.getId(), quoteInitiator.getId()))
+                    )
+                    .andExpect(status().isOk());
+
+            QuoteTrade trade = entityManager.createQuery("select t from QuoteTrade t", QuoteTrade.class)
+                    .getSingleResult();
+
+            assertThat(trade.getQuoteInitiator()).hasValue(quoteInitiator);
+            assertThat(trade.getUserInitiator()).isSameAs(nadia);
+
+            assertThat(trade.getQuoteValidator()).isSameAs(quoteValidator);
+            assertThat(trade.getUserValidator()).isSameAs(guillaume);
+
+            assertThat(trade.getStatus()).isEqualTo(TradeStatus.WAITING);
+            assertThat(trade.getQuoteValidator().getContent()).isEqualTo("le repas du midi été bon");
+
+        }
+
+        @Test
+        @WithMockUser(roles = "ADMIN", username = GUIGUI)
+        @DisplayName("on trade validation, should exchange quotes")
+        void shouldAcceptTrade() throws Exception {
+            // GIVEN
+            QuoteTrade quoteTrade = new QuoteTrade();
+            quoteTrade.setUserInitiator(nadia);
+            quoteTrade.setUserValidator(guillaume);
+            quoteTrade.setQuoteInitiator(nadia.getQuoteRegistrations().iterator().next().getQuote());
+            quoteTrade.setQuoteValidator(guillaume.getQuoteRegistrations().iterator().next().getQuote());
+            entityManager.persist(quoteTrade);
+
+            //When
+
+            String url = "/api/v1/trade/" + quoteTrade.getId();
+            mockMvc.perform(put(url)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("""
+                            {
+                            "status": "ACCEPTED"
+                            }
+                            """)
+            ).andExpect(status().isOk());
+
+
+            assertThat(quoteTrade.getStatus()).isEqualTo(TradeStatus.ACCEPTED);
+
+            Optional<Quote> quoteInitiatorToValidator = guillaume.getQuoteRegistrations().stream()
+                    .map(QuoteRegistration::getQuote)
+                    .filter(quote -> quote.equals(quoteInitiator))
+                    .findAny();
+            
+            Optional<Quote> quoteValidatorToInitiator = nadia.getQuoteRegistrations().stream()
+                    .map(QuoteRegistration::getQuote)
+                    .filter(quote -> quote.equals(quoteValidator))
+                    .findAny();
+
+            assertThat(quoteInitiatorToValidator).isPresent();
+            assertThat(quoteValidatorToInitiator).isPresent();
+
+            assertThat(guillaume.getQuoteRegistrations()).doesNotContain(quoteRegistrationValidator);
+            assertThat(nadia.getQuoteRegistrations()).doesNotContain(quoteRegistrationInitiator);
+
+        }
+        @Test
+        @WithMockUser(roles = "ADMIN", username = GUIGUI)
+        @DisplayName("on trade validation, should not exchange quotes")
+        void shouldNotAcceptTrade() throws Exception {
+            // GIVEN
+            QuoteTrade quoteTrade = new QuoteTrade();
+            quoteTrade.setUserInitiator(nadia);
+            quoteTrade.setUserValidator(guillaume);
+            quoteTrade.setQuoteInitiator(nadia.getQuoteRegistrations().iterator().next().getQuote());
+            quoteTrade.setQuoteValidator(guillaume.getQuoteRegistrations().iterator().next().getQuote());
+            entityManager.persist(quoteTrade);
+
+            //When
+
+            String url = "/api/v1/trade/" + quoteTrade.getId();
+            mockMvc.perform(put(url)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("""
+                            {
+                            "status": "REFUSED"
+                            }
+                            """)
+            ).andExpect(status().isOk());
+
+
+            assertThat(quoteTrade.getStatus()).isEqualTo(TradeStatus.REFUSED);
+
+            assertThat(guillaume.getQuoteRegistrations()).contains(quoteRegistrationValidator);
+            assertThat(nadia.getQuoteRegistrations()).contains(quoteRegistrationInitiator);
+
+        }
+
 
     }
 
