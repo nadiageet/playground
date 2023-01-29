@@ -1,4 +1,5 @@
 import {Component} from '@angular/core';
+import {QuoteClientService} from "../quote-client.service";
 
 @Component({
   selector: 'app-my-collection',
@@ -8,10 +9,10 @@ import {Component} from '@angular/core';
 export class MyCollectionComponent {
 
 
+  constructor(private quoteClient: QuoteClientService) {
+  }
+
   fetchQuotes(): void {
-    fetch("http://localhost:8080/quotes")
-      .then(res => res.json())
-      .then(console.log)
-      .catch(console.log);
+    this.quoteClient.getMyCollection().subscribe(console.table);
   }
 }

@@ -50,8 +50,8 @@ Authorization: Bearer {{adminJwt}}
 <> 2023-01-07T151632.500.json
 
 ###
-GET http://localhost:8080/api/v1/quotesRegistrations
-Authorization: Bearer {{token}}
+GET http://localhost:8080/api/v1/quoteRegistration/quotedex
+Authorization: Bearer {{adminJwt}}
 
 <> 2023-01-07T183409.500.json
 <> 2023-01-07T183334.200.json

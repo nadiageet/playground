@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/quoteRegistration")
+@RequestMapping("/api/v1/quoteRegistration/")
 public class QuoteRegistrationController {
     
     private final QuoteRegistrationService quoteRegistrationService;
@@ -23,6 +23,7 @@ public class QuoteRegistrationController {
     public void generateQuote(){
         quoteRegistrationService.giveRandomQuote();
     }
+    
     @GetMapping("/quotedex")
     public List<GetQuotedexResponse> getQuotedex(){
         return quoteRegistrationService.getQuotedex();
