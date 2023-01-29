@@ -3,6 +3,8 @@ package com.example.playground.quote.service;
 import com.example.playground.exception.ApplicationException;
 import com.example.playground.feign.rapidapi.RandomQuote;
 import com.example.playground.feign.rapidapi.RandomQuoteClient;
+import com.example.playground.quote.api.response.QuoteTradeResponse;
+import com.example.playground.quote.api.response.TradeHistory;
 import com.example.playground.quote.domain.Quote;
 import com.example.playground.quote.domain.QuoteRegistration;
 import com.example.playground.quote.domain.QuoteTrade;
@@ -18,6 +20,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -83,7 +87,6 @@ public class QuoteService {
     }
 
 
-
     private User getAuthenticatedUser() {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByUserName(userName)
@@ -110,13 +113,13 @@ public class QuoteService {
         trade.setUserInitiator(authenticatedUser);
         trade.setQuoteValidator(quoteRegistration.getQuote());
         trade.setUserValidator(quoteRegistration.getUser());
-        
-        if(quoteInitiatorId != null){
+
+        if (quoteInitiatorId != null) {
             Quote quoteInitiator = quoteRepository.getReferenceById(quoteInitiatorId);
             boolean userPossedQuote = trade.getUserInitiator().getQuoteRegistrations()
                     .stream().map(QuoteRegistration::getQuote)
                     .anyMatch(quote -> quote.equals(quoteInitiator));
-            if(!userPossedQuote){
+            if (!userPossedQuote) {
                 throw new ApplicationException("forbidden");
             }
             trade.setQuoteInitiator(quoteInitiator);
@@ -127,7 +130,7 @@ public class QuoteService {
 
     public void updateTrade(Long tradeId, TradeStatus status) {
         QuoteTrade trade = quoteToTradeRepository.getReferenceById(tradeId);
-        
+
         Quote quoteValidator = trade.getQuoteValidator();
         User authenticatedUser = getAuthenticatedUser();
         if (!trade.getUserValidator().equals(authenticatedUser)) {
@@ -172,5 +175,44 @@ public class QuoteService {
                 .findAny()
                 .orElseThrow();
         user.removeRegistration(q);
+    }
+
+    public List<TradeHistory> getTadeHistory() {
+        User authenticatedUser = getAuthenticatedUser();
+        return quoteToTradeRepository.getAllTradeAcceptedByUser(authenticatedUser)
+                .stream().map(quoteTrade -> {
+                    boolean isValidator = quoteTrade.getUserValidator().equals(authenticatedUser);
+
+                    TradeHistory tradeHistory = new TradeHistory();
+
+                    // user avec lequel on fait l'echange 
+                    tradeHistory.setTraderName(quoteTrade.getUserInitiator().getUserName());
+
+                    Quote quoteReceived = isValidator ? quoteTrade.getQuoteInitiator().orElse(null) : quoteTrade.getQuoteValidator();
+
+                    if (quoteReceived != null) {
+                        QuoteTradeResponse received = new QuoteTradeResponse();
+                        received.setId(quoteReceived.getId());
+                        received.setContent(quoteReceived.getContent());
+                        received.setOriginator(quoteReceived.getOriginator());
+
+                        tradeHistory.setQuoteReceived(received);
+                    }
+
+                    Quote quoteGiven = isValidator ? quoteTrade.getQuoteValidator() : quoteTrade.getQuoteInitiator().orElse(null);
+
+                    if (quoteGiven != null) {
+
+                        QuoteTradeResponse given = new QuoteTradeResponse();
+                        given.setId(quoteGiven.getId());
+                        given.setContent(quoteGiven.getContent());
+                        given.setOriginator(quoteGiven.getOriginator());
+
+                        tradeHistory.setQuoteGiven(given);
+                    }
+
+                    return tradeHistory;
+
+                }).toList();
     }
 }

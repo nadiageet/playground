@@ -96,23 +96,6 @@ public class QuoteController {
         return QuoteRegistrationMapper.createQuoteRegistration(entities);
     }
 
-    @PostMapping("/trade/propose/{quoteId}")
-    @ApiModelProperty("Propose for exchange a quote by the requester")
-    public void proposeQuote(@PathVariable Long quoteId) {
-        log.debug("request received to propose for exchange a quote by the requester");
-        quoteService.proposeQuote(quoteId);
-    }
-
-    // TODO: 26/01/2023 API pour lancer un echange
-    @PostMapping("/trade")
-    public void offerQuote(@RequestBody CreateQuoteTradeRequest createQuoteTradeRequest ) {
-
-        quoteService.tradeQuote(createQuoteTradeRequest.getQuoteRegistrationId(), createQuoteTradeRequest.getQuoteInitiatorId());
-    }
-
-    @PutMapping("/trade/{tradeId}")
-    public void updateRrade(@PathVariable Long tradeId, @RequestBody UpdateQuoteRequest updateQuoteRequest) {
-        quoteService.updateTrade(tradeId, updateQuoteRequest.getStatus());
-    }
+   
 
 }

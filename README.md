@@ -19,8 +19,8 @@ API à redéfinir en fonction des objectifs ci dessous
   - [x] Une page permettant de gagner une citation aléatoire parmis celle existantes.
   - [x] Une page permettant de proposer des citations à l'échange
   - [x] Une page permettant de voir les citations échangeables par les autres
-  - permettre de demander un échange
-  - permettre d'accepter ou refuser un échange
+  - [x] permettre de demander un échange
+  - [x] permettre d'accepter ou refuser un échange
   - Une page récapitulant les échanges effectués
 - Pour les admins :
   - [x] Une page permettant de générer aléatoirement une quote depuis le site
