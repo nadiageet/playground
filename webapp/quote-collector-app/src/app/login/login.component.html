@@ -1,0 +1,27 @@
+<!-- Pills content -->
+<form (ngSubmit)="onSubmit($event)" [formGroup]="form">
+  <div aria-labelledby="tab-login" id="pills-login" role="tabpanel" style="width: 50%; margin: auto">
+    <!-- Email input -->
+    <div class="form-outline mb-4">
+      <input class="form-control"
+             formControlName="userName"
+             id="loginName"
+             placeholder="userName"
+             type="text"/>
+    </div>
+
+    <!-- Password input -->
+    <div class="form-outline mb-4">
+      <input class="form-control"
+             formControlName="password"
+             id="loginPassword"
+             placeholder="Password"
+             type="password"/>
+    </div>
+    <!-- Submit button -->
+    <button [disabled]="!form.valid" class="btn btn-primary btn-block mb-4 align-self-lg-end" type="submit">Sign in
+    </button>
+  </div>
+</form>
+
+<!-- Pills content -->
