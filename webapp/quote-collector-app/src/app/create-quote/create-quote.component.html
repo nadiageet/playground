@@ -1,0 +1,9 @@
+<form (ngSubmit)="submit($event)" [formGroup]="form">
+  <div class="mb-3">
+    <label class="form-label" for="exampleFormControlTextarea1">Quote</label>
+    <textarea class="form-control"
+              formControlName="quote"
+              id="exampleFormControlTextarea1" placeholder="J'écoute tes belles paroles" rows="3"></textarea>
+  </div>
+  <button [disabled]="form.invalid" class="btn btn-success" type="submit">Enregistrer</button>
+</form>

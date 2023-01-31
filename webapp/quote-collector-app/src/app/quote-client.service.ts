@@ -1,6 +1,5 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import * as http from "http";
 import {Quotedex} from "./my-collection/Quotedex";
 import {Observable} from "rxjs";
 
@@ -9,9 +8,18 @@ import {Observable} from "rxjs";
 })
 export class QuoteClientService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   getMyCollection(): Observable<Quotedex[]> {
     return this.http.get<Quotedex[]>('http://localhost:8080/api/v1/quoteRegistration/quotedex');
+  }
+
+  createQuote(content: string) {
+    return this.http.post('http://localhost:8080/api/v1/quote', {content});
+  }
+
+  registerRandomQuote() {
+    return this.http.post('http://localhost:8080/api/v1/quoteRegistration/random', null);
   }
 }

@@ -1,7 +1,19 @@
-<h2>Ma collection de quotes</h2>
+<h2 class="mb-5">Ma collection de quotes</h2>
 
-<pre>
-  <div>
-    {{$quotes | async | json}}
+
+<div class="row gx-5 gy-4">
+  <div
+    *ngFor="let quote of $quotes.value"
+    class="col-md-3"
+  >
+    <div [ngClass]="{'border-dark': quote.isPossessed, 'border-secondary': !quote.isPossessed}" class="card">
+      <div *ngIf="quote.isPossessed" class="card-body text-dark">
+        <h5 class="card-title">{{quote.id}} - {{quote.originator}}</h5>
+        <p class="card-text">{{quote.content}}</p>
+      </div>
+      <div *ngIf="!quote.isPossessed" class="card-body text-secondary">
+        <p class="card-text">{{quote.id}}</p>
+      </div>
+    </div>
   </div>
-</pre>
+</div>

@@ -38,6 +38,15 @@ export class AuthService {
     return !!localStorage.getItem('session')
   }
 
+  public getSession(): UserAuthentication | null {
+    const session = localStorage.getItem('session');
+    if (!session) {
+      return null;
+    } else {
+      return JSON.parse(session);
+    }
+  }
+
   public getAuthentication(): Observable<UserAuthentication | null> {
     return this.$authentication.asObservable();
   }
