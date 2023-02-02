@@ -21,9 +21,13 @@ API à redéfinir en fonction des objectifs ci dessous
   - [x] Une page permettant de voir les citations échangeables par les autres
   - [x] permettre de demander un échange
   - [x] permettre d'accepter ou refuser un échange
-  - Une page récapitulant les échanges effectués
+  - [x] Une page récapitulant les échanges effectués
 - Pour les admins :
   - [x] Une page permettant de générer aléatoirement une quote depuis le site
   - [x] Une page permettant de créer manuellement une quote, le créateur sera le nom du user
-  - Une page pour voir les échanges en cours
-  - Une page pour voir les collections des users
+  - Une page pour voir les échanges en cours (status proposed et pour tous les users et pas en double)
+  - Une page pour voir les collections des users (pagination : user et sa collection par page)
+  - Lister les users (page liste des users)
+  - Donner une quote a un user (créer une quote registration pour un user)
+  - [x] Modifier le /api/v1/quoteRegistration/random pour ne donner qu'une nouvelle quote
+  - [x] Modifier le quotedex pour compter le nombre de fois qu'on a la quote (le teste)

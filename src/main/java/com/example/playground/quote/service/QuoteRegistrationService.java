@@ -1,5 +1,6 @@
 package com.example.playground.quote.service;
 
+import com.example.playground.quote.api.response.GetCountQuotedexResponse;
 import com.example.playground.quote.api.response.GetQuotedexResponse;
 import com.example.playground.quote.domain.Quote;
 import com.example.playground.quote.domain.QuoteRegistration;
@@ -8,15 +9,13 @@ import com.example.playground.quote.repository.QuoteRepository;
 import com.example.playground.user.User;
 import com.example.playground.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.SecureRandom;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -53,21 +52,28 @@ public class QuoteRegistrationService {
 
     @Transactional
     public void giveRandomQuote() {
-        QuoteRegistration quoteRegistration = new QuoteRegistration();
         User authenticatedUser = getAuthenticatedUser();
-        quoteRegistration.setQuote(findRandomQuote());
+        findRandomQuote(authenticatedUser).ifPresent(quote -> registerQuoteForUser(authenticatedUser, quote));
+
+    }
+
+    private void registerQuoteForUser(User authenticatedUser, Quote quote) {
+        QuoteRegistration quoteRegistration = new QuoteRegistration();
+        quoteRegistration.setQuote(quote);
         authenticatedUser.addRegistration(quoteRegistration);
-        
+
         quoteRegistrationRepository.save(quoteRegistration);
         log.info("user {} has a new quote : {}", authenticatedUser.getUserName(), quoteRegistration.getQuote().getContent());
     }
 
-    private Quote findRandomQuote() {
-        long count = quoteRepository.count();
+    private Optional<Quote> findRandomQuote(User user) {
+        List<Long> quotes = quoteRepository.findQuotesNotPossessedByUser(user);
+        if (quotes.isEmpty()) {
+            return Optional.empty();
+        }
+        long count = quotes.size();
         int i = (int) ((Math.random() * count));
-        Page<Quote> page = quoteRepository.findAll(PageRequest.of(i, 1));
-        Quote quote = page.getContent().get(0);
-        return quote;
+        return Optional.of(quoteRepository.getReferenceById(quotes.get(i)));
     }
 
     public List<GetQuotedexResponse> getQuotedex() {
@@ -92,6 +98,29 @@ public class QuoteRegistrationService {
                     .content(quote.getContent());
         } else {
             builder.isPossessed(false);
+        }
+        return builder.build();
+    }
+
+    public List<GetCountQuotedexResponse> getCountQuotedex() {
+        User user = getAuthenticatedUser();
+        Set<QuoteRegistration> quoteRegistrationSet = quoteRegistrationRepository.findAllByUser(user);
+
+        return quoteRepository.findAll().stream()
+                .map(quote -> mapCountQuotedex(quoteRegistrationSet, quote))
+                .toList();
+
+    }
+
+    public GetCountQuotedexResponse mapCountQuotedex(Set<QuoteRegistration> possessedQuotes, Quote quote) {
+        var builder = GetCountQuotedexResponse.builder();
+        builder.id(quote.getId());
+        int countOfQuote = (int) possessedQuotes.stream().filter(quoteRegistration -> quoteRegistration.getQuote().equals(quote))
+                .count();
+        builder.numberOfQuote(countOfQuote);
+        if (countOfQuote > 0) {
+            builder.originator(quote.getOriginator())
+                    .content(quote.getContent());
         }
         return builder.build();
     }
