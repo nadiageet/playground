@@ -25,7 +25,7 @@ API à redéfinir en fonction des objectifs ci dessous
 - Pour les admins :
   - [x] Une page permettant de générer aléatoirement une quote depuis le site
   - [x] Une page permettant de créer manuellement une quote, le créateur sera le nom du user
-  - Une page pour voir les échanges en cours (status proposed et pour tous les users et pas en double)
+  - [x] Une page pour voir les échanges en cours (status proposed et pour tous les users et pas en double)
   - Une page pour voir les collections des users (pagination : user et sa collection par page)
   - Lister les users (page liste des users)
   - Donner une quote a un user (créer une quote registration pour un user)

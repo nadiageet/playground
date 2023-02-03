@@ -24,6 +24,10 @@ public class QuoteRegistration {
     @JoinColumn(name = "quote_id")
     private Quote quote;
 
-    private boolean isProposedQuote = false;
+    private boolean isProposedQuote = false; 
+    
+    private boolean isOfferedQuote = false;
+    
+    
     
 }
