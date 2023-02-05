@@ -23,6 +23,5 @@ public class Quote {
     @Column(columnDefinition = "TEXT")
     private String content;
     
-    
 
 }

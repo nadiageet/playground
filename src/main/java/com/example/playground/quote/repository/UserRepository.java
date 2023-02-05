@@ -1,7 +1,8 @@
-package com.example.playground.user;
+package com.example.playground.quote.repository;
 
 import com.example.playground.quote.api.response.UserResponse;
 import com.example.playground.quote.domain.Quote;
+import com.example.playground.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,7 +14,6 @@ import java.util.Set;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUserName(String username);
-    Page<User> findAllUsers(Pageable pageable);
 
 
     @Query("""

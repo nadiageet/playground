@@ -2,7 +2,7 @@ package com.example.playground.user.api;
 
 
 import com.example.playground.security.jwt.JwtUtils;
-import com.example.playground.user.UserRepository;
+import com.example.playground.quote.repository.UserRepository;
 import com.example.playground.user.api.request.LoginRequest;
 import com.example.playground.user.api.request.RegisterRequest;
 import com.example.playground.user.api.response.JwtResponse;

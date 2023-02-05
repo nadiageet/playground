@@ -2,6 +2,7 @@ package com.example.playground.quote.api;
 
 import com.example.playground.quote.api.response.GetQuotedexResponse;
 import com.example.playground.quote.service.QuoteRegistrationService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +24,8 @@ public class QuoteRegistrationController {
     public void generateQuote(){
         quoteRegistrationService.giveRandomQuote();
     }
-    
+
+    @ApiOperation(value = "initial version", tags = "Quotedex")
     @GetMapping("/quotedex")
     public List<GetQuotedexResponse> getQuotedex(){
         return quoteRegistrationService.getQuotedex();

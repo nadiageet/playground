@@ -2,17 +2,14 @@ package com.example.playground.quote.api;
 
 import com.example.playground.feign.rapidapi.RandomQuoteClient;
 import com.example.playground.quote.QuoteRegistrationMapper;
-import com.example.playground.quote.api.request.CreateQuoteRequest;
-import com.example.playground.quote.api.request.CreateQuoteTradeRequest;
-import com.example.playground.quote.api.request.GenerateQuoteRequest;
-import com.example.playground.quote.api.request.UpdateQuoteRequest;
+import com.example.playground.quote.api.request.*;
 import com.example.playground.quote.api.response.GetQuoteRegistrationsResponse;
 import com.example.playground.quote.domain.Quote;
 import com.example.playground.quote.domain.QuoteRegistration;
 import com.example.playground.quote.repository.QuoteRegistrationRepository;
 import com.example.playground.quote.service.QuoteRegistrationService;
 import com.example.playground.quote.service.QuoteService;
-import com.example.playground.user.UserRepository;
+import com.example.playground.quote.repository.UserRepository;
 import feign.FeignException;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +32,8 @@ public class QuoteController {
     private final QuoteRegistrationService quoteRegistrationService;
 
 
-    public QuoteController(RandomQuoteClient randomQuoteClient, QuoteService quoteService, QuoteRegistrationRepository quoteRegistrationRepository, UserRepository userRepository, QuoteRegistrationService quoteRegistrationService) {
+    public QuoteController(RandomQuoteClient randomQuoteClient, QuoteService quoteService,
+                           QuoteRegistrationService quoteRegistrationService) {
         this.randomQuoteClient = randomQuoteClient;
         this.quoteService = quoteService;
         this.quoteRegistrationService = quoteRegistrationService;
@@ -94,6 +92,11 @@ public class QuoteController {
         log.debug("request received to all the quote proposed for exchange by other person than the requester");
         Set<QuoteRegistration> entities = quoteRegistrationService.getAllProposedQuotes();
         return QuoteRegistrationMapper.createQuoteRegistration(entities);
+    }
+    @PostMapping("/gift")
+    @ApiModelProperty("proposed quote by the requester")
+    public void proposeQuote(@RequestBody GiftQuoteRequest giftQuoteRequest) {
+        quoteService.giftQuote(giftQuoteRequest.getUserId(), giftQuoteRequest.getQuoteId());
     }
 
    

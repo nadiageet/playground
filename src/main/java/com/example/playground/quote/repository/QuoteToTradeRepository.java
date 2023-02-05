@@ -32,6 +32,6 @@ public interface QuoteToTradeRepository extends JpaRepository<QuoteTrade, Long> 
             select trade from QuoteTrade trade
             where trade.userInitiator = :authenticatedUser or trade.userValidator = :authenticatedUser
             """)
-    Page<CollectionOfTrade> getTradesByUser(User authenticatedUser, Pageable pageable);
+    Page<QuoteTrade> getTradesByUser(User authenticatedUser, Pageable pageable);
 
 }

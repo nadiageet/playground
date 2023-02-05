@@ -13,5 +13,5 @@ public class UserResponse {
     private Long id;
     private String userName;
     
-    private Set<String> role;
+    private Set<String> roles;
 }

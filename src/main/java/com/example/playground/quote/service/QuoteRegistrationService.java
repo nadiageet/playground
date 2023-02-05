@@ -7,7 +7,7 @@ import com.example.playground.quote.domain.QuoteRegistration;
 import com.example.playground.quote.repository.QuoteRegistrationRepository;
 import com.example.playground.quote.repository.QuoteRepository;
 import com.example.playground.user.User;
-import com.example.playground.user.UserRepository;
+import com.example.playground.quote.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

@@ -2,9 +2,10 @@ package com.example.playground;
 
 import com.example.playground.quote.domain.Quote;
 import com.example.playground.quote.domain.QuoteRegistration;
+import com.example.playground.quote.repository.QuoteRepository;
 import com.example.playground.quote.service.QuoteService;
 import com.example.playground.user.User;
-import com.example.playground.user.UserRepository;
+import com.example.playground.quote.repository.UserRepository;
 import com.example.playground.user.UserRole;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -37,6 +38,7 @@ public class PlaygroundApplication {
     @Bean
     @Profile("!test")
     CommandLineRunner commandLineRunner(UserRepository userRepository,
+                                        QuoteRepository quoteRepository,
                                         QuoteService quoteService,
                                         PasswordEncoder passwordEncoder) {
         return args -> {
@@ -52,7 +54,12 @@ public class PlaygroundApplication {
             guillaume.setPassword(passwordEncoder.encode("pass"));
 
             log.info("The user was saved with id {}", user.getId());
-            Quote quote = quoteService.generateQuoteFromAPI();
+//            Quote quote = quoteService.generateQuoteFromAPI();
+            Quote quote = new Quote();
+            quote.setContent("no rapidapi for now");
+            quote.setOriginator("GuiGui");
+
+            quoteRepository.save(quote);
 
             QuoteRegistration quoteRegistration = new QuoteRegistration();
             quoteRegistration.setQuote(quote);
