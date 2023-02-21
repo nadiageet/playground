@@ -9,6 +9,7 @@ import {AuthInterceptor} from "./security/auth-interceptor";
 import {LoginComponent} from './login/login.component';
 import {ReactiveFormsModule} from "@angular/forms";
 import {NavbarComponent} from './navbar/navbar.component';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import {NavbarComponent} from './navbar/navbar.component';
     BrowserModule,
     HttpClientModule,
     ReactiveFormsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    NgbModule
   ],
   providers: [
     {
