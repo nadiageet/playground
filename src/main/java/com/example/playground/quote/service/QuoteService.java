@@ -13,15 +13,15 @@ import com.example.playground.quote.domain.TradeStatus;
 import com.example.playground.quote.repository.QuoteRegistrationRepository;
 import com.example.playground.quote.repository.QuoteRepository;
 import com.example.playground.quote.repository.QuoteToTradeRepository;
-import com.example.playground.user.User;
 import com.example.playground.quote.repository.UserRepository;
+import com.example.playground.user.User;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;

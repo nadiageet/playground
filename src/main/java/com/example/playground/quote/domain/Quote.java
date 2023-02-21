@@ -4,18 +4,16 @@ package com.example.playground.quote.domain;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter
 @Setter
 public class Quote {
-    
+
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "quote_seq")
+    @SequenceGenerator(initialValue = 1, name = "quote_seq", allocationSize = 1)
     private Long id;
 
     private String originator;

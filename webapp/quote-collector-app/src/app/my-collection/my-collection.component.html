@@ -6,12 +6,15 @@
     *ngFor="let quote of $quotes.value"
     class="col-md-3"
   >
-    <div [ngClass]="{'border-dark': quote.isPossessed, 'border-secondary': !quote.isPossessed}" class="card">
-      <div *ngIf="quote.isPossessed" class="card-body text-dark">
-        <h5 class="card-title">{{quote.id}} - {{quote.originator}}</h5>
+    <div [ngClass]="{'border-dark': quote.numberOfQuote > 0, 'border-secondary': quote.numberOfQuote === 0}"
+         class="card">
+      <div *ngIf="quote.numberOfQuote > 0" class="card-body text-dark">
+        <h5 class="card-title">{{quote.id}} - {{quote.originator}} <span *ngIf="quote.numberOfQuote > 1"
+                                                                         class="badge bg-secondary">{{quote.numberOfQuote}}</span>
+        </h5>
         <p class="card-text">{{quote.content}}</p>
       </div>
-      <div *ngIf="!quote.isPossessed" class="card-body text-secondary">
+      <div *ngIf="quote.numberOfQuote === 0" class="card-body text-secondary">
         <p class="card-text">{{quote.id}}</p>
       </div>
     </div>

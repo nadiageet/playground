@@ -2,5 +2,5 @@ export interface Quotedex {
   id: number,
   content?: string,
   originator?: string,
-  isPossessed: boolean
+  numberOfQuote: number
 }

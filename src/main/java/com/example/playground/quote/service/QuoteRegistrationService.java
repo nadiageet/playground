@@ -6,9 +6,10 @@ import com.example.playground.quote.domain.Quote;
 import com.example.playground.quote.domain.QuoteRegistration;
 import com.example.playground.quote.repository.QuoteRegistrationRepository;
 import com.example.playground.quote.repository.QuoteRepository;
-import com.example.playground.user.User;
 import com.example.playground.quote.repository.UserRepository;
+import com.example.playground.user.User;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -123,5 +124,19 @@ public class QuoteRegistrationService {
                     .content(quote.getContent());
         }
         return builder.build();
+    }
+
+    public GetQuotedexResponse receiveQuote() {
+        long count = quoteRepository.count();
+        Quote quoteReceived = quoteRepository.findAll(PageRequest.of((int) (Math.random() * count), 1)).getContent().get(0);
+        QuoteRegistration quoteRegistration = new QuoteRegistration();
+        quoteRegistration.setQuote(quoteReceived);
+        getAuthenticatedUser().addRegistration(quoteRegistration);
+        return new GetQuotedexResponse(
+                quoteReceived.getId(),
+                quoteReceived.getContent(),
+                quoteReceived.getOriginator(),
+                quoteRegistration.isProposedQuote()
+        );
     }
 }

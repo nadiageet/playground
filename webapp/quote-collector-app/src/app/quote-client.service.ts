@@ -12,7 +12,7 @@ export class QuoteClientService {
   }
 
   getMyCollection(): Observable<Quotedex[]> {
-    return this.http.get<Quotedex[]>('http://localhost:8080/api/v1/quoteRegistration/quotedex');
+    return this.http.get<Quotedex[]>('http://localhost:8080/api/v2/quotedex');
   }
 
   createQuote(content: string) {
