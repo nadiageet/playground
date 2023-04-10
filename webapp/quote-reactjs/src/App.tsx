@@ -35,7 +35,8 @@ function App() {
             console.error(error)
             setIsAuthenticated(false);
             deleteLocalJwtToken();
-        }
+        },
+        retry: false
     });
 
     function handleLogin(loginResponse: LoginJwtResponse) {

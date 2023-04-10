@@ -3,7 +3,6 @@ import Navbar from 'react-bootstrap/Navbar';
 import React, {useContext} from "react";
 import UserContext from "../auth/UserContext";
 import {NavDropdown} from "react-bootstrap";
-import {deleteLocalJwtToken} from "../auth/AuthUtils";
 
 
 export type AppNavbarProps = {
@@ -13,13 +12,7 @@ export type AppNavbarProps = {
 };
 
 function AppNavbar({onLogout}: AppNavbarProps) {
-
-
     const userContext = useContext(UserContext);
-
-    function handleOnLogoutClick() {
-        deleteLocalJwtToken();
-    }
 
     return (
         <>
