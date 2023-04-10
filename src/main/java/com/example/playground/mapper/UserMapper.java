@@ -1,9 +1,8 @@
 package com.example.playground.mapper;
 
 import com.example.playground.quote.api.response.UserResponse;
-import com.example.playground.user.User;
+import com.example.playground.user.model.User;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {

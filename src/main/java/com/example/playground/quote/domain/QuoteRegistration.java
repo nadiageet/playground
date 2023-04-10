@@ -1,6 +1,6 @@
 package com.example.playground.quote.domain;
 
-import com.example.playground.user.User;
+import com.example.playground.user.model.User;
 import lombok.Getter;
 import lombok.Setter;
 

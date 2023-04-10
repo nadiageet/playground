@@ -1,8 +1,8 @@
 package com.example.playground.user.api;
 
 
-import com.example.playground.security.jwt.JwtUtils;
 import com.example.playground.quote.repository.UserRepository;
+import com.example.playground.security.jwt.JwtUtils;
 import com.example.playground.user.api.request.LoginRequest;
 import com.example.playground.user.api.request.RegisterRequest;
 import com.example.playground.user.api.response.JwtResponse;
@@ -27,16 +27,16 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequestMapping("/api/v1/auth")
 public class AuthController {
-    
-    private final AuthenticationManager authenticationManager;
-    
-    private final PasswordEncoder passwordEncoder;
-    
-    private final JwtUtils jwtUtils;
-    
-    private final UserRepository userRepository; 
 
-    public AuthController(AuthenticationManager authenticationManager, 
+    private final AuthenticationManager authenticationManager;
+
+    private final PasswordEncoder passwordEncoder;
+
+    private final JwtUtils jwtUtils;
+
+    private final UserRepository userRepository;
+
+    public AuthController(AuthenticationManager authenticationManager,
                           PasswordEncoder passwordEncoder,
                           JwtUtils jwtUtils,
                           UserRepository userRepository) {
@@ -69,7 +69,7 @@ public class AuthController {
 
     @PostMapping(value = "/register")
     public void registerUser(@RequestBody @Valid RegisterRequest registerRequest) {
-        var appUser = new com.example.playground.user.User();
+        var appUser = new com.example.playground.user.model.User();
         appUser.setUserName(registerRequest.getUserName());
         appUser.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         appUser.setRoles(Set.of(registerRequest.getRole()));
@@ -77,5 +77,5 @@ public class AuthController {
         log.info("user {} was created", registerRequest.getUserName());
         userRepository.save(appUser);
     }
-    
+
 }

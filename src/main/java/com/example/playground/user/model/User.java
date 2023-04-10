@@ -1,4 +1,4 @@
-package com.example.playground.user;
+package com.example.playground.user.model;
 
 import com.example.playground.quote.domain.QuoteRegistration;
 import lombok.Getter;

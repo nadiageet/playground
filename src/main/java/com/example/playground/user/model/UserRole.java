@@ -1,4 +1,4 @@
-package com.example.playground.user;
+package com.example.playground.user.model;
 
 public enum UserRole {
     

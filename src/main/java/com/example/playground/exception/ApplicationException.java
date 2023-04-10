@@ -28,4 +28,8 @@ public class ApplicationException extends RuntimeException {
     public String getErrorCode() {
         return errorCode;
     }
+
+    public HttpStatus getHttpStatus() {
+        return HttpStatus.BAD_REQUEST;
+    }
 }

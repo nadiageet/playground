@@ -7,8 +7,8 @@ import com.example.playground.quote.domain.QuoteRegistration;
 import com.example.playground.quote.domain.QuoteTrade;
 import com.example.playground.quote.domain.TradeStatus;
 import com.example.playground.quote.repository.QuoteRegistrationRepository;
-import com.example.playground.user.User;
-import com.example.playground.user.UserRole;
+import com.example.playground.user.model.User;
+import com.example.playground.user.model.UserRole;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,8 @@ import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest

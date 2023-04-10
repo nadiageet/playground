@@ -1,7 +1,7 @@
 package com.example.playground.quote.repository;
 
 import com.example.playground.quote.domain.QuoteRegistration;
-import com.example.playground.user.User;
+import com.example.playground.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

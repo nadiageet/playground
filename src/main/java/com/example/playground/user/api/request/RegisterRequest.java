@@ -1,6 +1,6 @@
 package com.example.playground.user.api.request;
 
-import com.example.playground.user.UserRole;
+import com.example.playground.user.model.UserRole;
 import lombok.Getter;
 import lombok.Setter;
 

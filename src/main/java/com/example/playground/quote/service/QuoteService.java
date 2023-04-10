@@ -14,7 +14,7 @@ import com.example.playground.quote.repository.QuoteRegistrationRepository;
 import com.example.playground.quote.repository.QuoteRepository;
 import com.example.playground.quote.repository.QuoteToTradeRepository;
 import com.example.playground.quote.repository.UserRepository;
-import com.example.playground.user.User;
+import com.example.playground.user.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;

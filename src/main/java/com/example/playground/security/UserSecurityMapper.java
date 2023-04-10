@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class UserSecurityMapper {
 
 
-    public static UserDetails map(com.example.playground.user.User user) {
+    public static UserDetails map(com.example.playground.user.model.User user) {
 
         return User.withUsername(user.getUserName())
                 .password(user.getPassword())

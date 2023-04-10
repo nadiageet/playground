@@ -2,35 +2,37 @@ import Button from 'react-bootstrap/Button';
 
 import Form from 'react-bootstrap/Form';
 import {useState} from "react";
-import axios from "axios";
 import {LoginJwtResponse} from "./LoginJwtResponse";
-import {useNavigate} from "react-router-dom";
+import {Navigate} from "react-router-dom";
+import fetchClient from "../client/FetchClient";
 
 
 interface LoginFormProps {
-    onSuccessfullyLogin: () => void
+    isAuthenticated: boolean
+    onSuccessfullyLogin: (jwt: LoginJwtResponse) => void
 }
 
-export default function LoginForm({onSuccessfullyLogin}: LoginFormProps) {
+export default function LoginForm({isAuthenticated, onSuccessfullyLogin}: LoginFormProps) {
     const [userName, setUserName] = useState('');
     const [password, setPassword] = useState('');
 
-    const navigate = useNavigate();
+
+    if (isAuthenticated) {
+        console.log("User already authenticated : redirecting from '/login' to '/'")
+        return <Navigate to={"/"}/>
+    }
 
     async function handleSubmit(event: any) {
         event.preventDefault();
         console.log("Submitted", userName, password);
 
         try {
-            const response = await axios.post<LoginJwtResponse>('http://localhost:8080/api/v1/auth/login', {
+            const response = await fetchClient.post<LoginJwtResponse>('/api/v1/auth/login', {
                 userName,
                 password
             });
-            const data: LoginJwtResponse = response.data;
-            localStorage.setItem("react-jwt", data.jwt);
-            console.log(response.data);
-            onSuccessfullyLogin();
-            navigate("/");
+            console.log("Server response after login : ", response.data);
+            onSuccessfullyLogin(response.data);
         } catch (e: any) {
             if (e.response.status === 403) {
                 alert("bad username / password");
