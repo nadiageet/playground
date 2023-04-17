@@ -7,7 +7,7 @@ import {NavDropdown} from "react-bootstrap";
 
 export type AppNavbarProps = {
 
-    onLogout: () => void
+    onLogout: () => void,
 
 };
 

@@ -15,13 +15,13 @@ import fetchClient from "./client/FetchClient";
 import {deleteLocalJwtToken, isJwtTokenPresent, saveLocalJwtToken} from "./auth/AuthUtils";
 import {LoginJwtResponse} from "./auth/LoginJwtResponse";
 
-function App() {
+function useAuthentication() {
 
     const [user, setUser] = useState<UserInfo | null>(null);
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(isJwtTokenPresent());
+    const [jwt, setJwt] = useState<boolean>(isJwtTokenPresent());
 
-    useQuery(["account", isAuthenticated], () => {
-        if (isAuthenticated) {
+    useQuery(["account", jwt], () => {
+        if (jwt) {
             console.log("User is authenticated thanks to the JWT Token in Local Storage. Proceeding to fetch its account information from server...");
             return fetchClient.get<UserInfo>('/api/v1/account')
                 .then(axiosResponse => axiosResponse.data);
@@ -30,26 +30,43 @@ function App() {
             return Promise.resolve(null);
         }
     }, {
-        onSuccess: data => setUser(data),
+        enabled: jwt,
+        onSuccess: data => {
+            console.log("User information retrieved from server successfully");
+            setUser(data)
+        },
         onError: error => {
             console.error(error)
-            setIsAuthenticated(false);
             deleteLocalJwtToken();
+            setJwt(false);
         },
         retry: false
-    });
+    })
+
+    return {
+        user, setUser,
+        jwt, setJwt,
+    }
+}
+
+
+function App() {
+    const {
+        user, setUser,
+        jwt, setJwt,
+    } = useAuthentication();
 
     function handleLogin(loginResponse: LoginJwtResponse) {
         console.log("User successfully logged in")
         saveLocalJwtToken(loginResponse.jwt);
-        setIsAuthenticated(true);
+        setJwt(true);
     }
 
     function handleLogout(): void {
         console.log("User logged out")
         deleteLocalJwtToken();
         setUser(null);
-        setIsAuthenticated(false);
+        setJwt(false);
     }
 
     return (
@@ -62,12 +79,12 @@ function App() {
                             <Route path={"/login"}
                                    element={
                                        <LoginForm
-                                           isAuthenticated={isAuthenticated}
+                                           hasLocalJwt={jwt}
                                            onSuccessfullyLogin={handleLogin}/>
                                    }>
                             </Route>
                             <Route path={"/"} element={
-                                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                                <ProtectedRoute hasLocalJwt={jwt}>
                                     <Secured></Secured>
                                 </ProtectedRoute>
                             }>

@@ -2,16 +2,16 @@ import React from 'react';
 import {Navigate} from 'react-router-dom';
 
 interface PrivateRouteProps {
-    isAuthenticated: boolean,
+    hasLocalJwt: boolean,
     children: any
 }
 
 function ProtectedRoute({
-                            isAuthenticated,
+                            hasLocalJwt,
                             children,
                         }: PrivateRouteProps) {
 
-    if (!isAuthenticated) {
+    if (!hasLocalJwt) {
         console.log("User must be authenticated to access this route, redirecting to '/login'")
         return <Navigate to={"/login"}/>
     } else {

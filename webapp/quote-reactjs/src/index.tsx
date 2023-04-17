@@ -21,7 +21,6 @@ root.render(
             <App/>
         </React.StrictMode>
         <ReactQueryDevtools initialIsOpen={false}></ReactQueryDevtools>
-
     </QueryClientProvider>
 );
 

@@ -8,19 +8,20 @@ import fetchClient from "../client/FetchClient";
 
 
 interface LoginFormProps {
-    isAuthenticated: boolean
+    hasLocalJwt: boolean
     onSuccessfullyLogin: (jwt: LoginJwtResponse) => void
 }
 
-export default function LoginForm({isAuthenticated, onSuccessfullyLogin}: LoginFormProps) {
-    const [userName, setUserName] = useState('');
-    const [password, setPassword] = useState('');
+const USERNAME_KEY = "username";
+export default function LoginForm({hasLocalJwt, onSuccessfullyLogin}: LoginFormProps) {
+    const [userName, setUserName] = useState<string>(localStorage.getItem(USERNAME_KEY) || '');
+    const [password, setPassword] = useState<string>('');
 
-
-    if (isAuthenticated) {
+    if (hasLocalJwt) {
         console.log("User already authenticated : redirecting from '/login' to '/'")
         return <Navigate to={"/"}/>
     }
+
 
     async function handleSubmit(event: any) {
         event.preventDefault();
@@ -32,9 +33,11 @@ export default function LoginForm({isAuthenticated, onSuccessfullyLogin}: LoginF
                 password
             });
             console.log("Server response after login : ", response.data);
+            localStorage.setItem(USERNAME_KEY, userName || '');
             onSuccessfullyLogin(response.data);
         } catch (e: any) {
             if (e.response.status === 403) {
+                setPassword('')
                 alert("bad username / password");
             }
             console.error(e);
@@ -47,13 +50,19 @@ export default function LoginForm({isAuthenticated, onSuccessfullyLogin}: LoginF
         <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Login</Form.Label>
-                <Form.Control onChange={e => setUserName(e.target.value)} placeholder="Votre login..."/>
+                <Form.Control
+                    value={userName}
+                    onChange={e => setUserName(e.target.value)}
+                    placeholder="Votre login..."/>
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>Password</Form.Label>
-                <Form.Control onChange={e => setPassword(e.target.value)} type="password"
-                              placeholder="Votre mot de passe..."/>
+                <Form.Control
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    type="password"
+                    placeholder="Votre mot de passe..."/>
             </Form.Group>
 
             <Button type={"submit"}>Se connecter</Button>
