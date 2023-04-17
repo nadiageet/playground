@@ -110,6 +110,7 @@ public class QuoteService {
         quote.setContent(content);
         quote.setOriginator(SecurityContextHolder.getContext().getAuthentication().getName());
         quoteRepository.save(quote);
+        addQuoteToUser(quote, getAuthenticatedUser());
     }
 
     public void tradeQuote(Long quoteRegistrationId, Long quoteInitiatorId) {

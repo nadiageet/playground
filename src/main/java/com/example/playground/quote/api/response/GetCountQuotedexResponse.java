@@ -8,5 +8,5 @@ import lombok.Builder;
 public record GetCountQuotedexResponse(Long id,
                                        String content,
                                        String originator,
-                                       int numberOfQuote) {
+                                       int numberOfQuotes) {
 }

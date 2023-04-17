@@ -74,8 +74,7 @@ public class QuoteController {
     }
 
     @PostMapping("/quote")
-    @PreAuthorize("hasRole('ADMIN')")
-//    @Valid valider le DTO
+//    @PreAuthorize("hasRole('ADMIN')")
     public void createQuote(@RequestBody @Valid CreateQuoteRequest content) {
         quoteService.createQuote(content.getContent());
     }

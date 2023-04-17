@@ -22,11 +22,11 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class QuoteRegistrationService {
     private final QuoteRegistrationRepository quoteRegistrationRepository;
     private final UserRepository userRepository;
-    
+
     private final QuoteRepository quoteRepository;
 
     public QuoteRegistrationService(QuoteRegistrationRepository quoteRegistrationRepository, UserRepository userRepository, QuoteRepository quoteRepository) {
@@ -118,10 +118,10 @@ public class QuoteRegistrationService {
         builder.id(quote.getId());
         int countOfQuote = (int) possessedQuotes.stream().filter(quoteRegistration -> quoteRegistration.getQuote().equals(quote))
                 .count();
-        builder.numberOfQuote(countOfQuote);
+        builder.numberOfQuotes(countOfQuote);
+        builder.originator(quote.getOriginator());
         if (countOfQuote > 0) {
-            builder.originator(quote.getOriginator())
-                    .content(quote.getContent());
+            builder.content(quote.getContent());
         }
         return builder.build();
     }

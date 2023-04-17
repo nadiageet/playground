@@ -4,7 +4,6 @@ import AppNavbar from "./components/navbar";
 import LoginForm from "./auth/LoginForm";
 import Container from "react-bootstrap/Container";
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import Secured from "./components/Secured";
 import ProtectedRoute from "./auth/ProtectedRoute";
 
 
@@ -14,6 +13,7 @@ import {useQuery} from 'react-query';
 import fetchClient from "./client/FetchClient";
 import {deleteLocalJwtToken, isJwtTokenPresent, saveLocalJwtToken} from "./auth/AuthUtils";
 import {LoginJwtResponse} from "./auth/LoginJwtResponse";
+import {HomeRoutes} from "./home/HomeRoutes";
 
 function useAuthentication() {
 
@@ -72,9 +72,9 @@ function App() {
     return (
         <div className="App">
             <UserContext.Provider value={user}>
-                <AppNavbar onLogout={handleLogout}></AppNavbar>
-                <Container>
-                    <Router>
+                <Router>
+                    <AppNavbar onLogout={handleLogout}></AppNavbar>
+                    <Container>
                         <Routes>
                             <Route path={"/login"}
                                    element={
@@ -83,16 +83,15 @@ function App() {
                                            onSuccessfullyLogin={handleLogin}/>
                                    }>
                             </Route>
-                            <Route path={"/"} element={
+                            <Route path={"/*"} element={
                                 <ProtectedRoute hasLocalJwt={jwt}>
-                                    <Secured></Secured>
+                                    <HomeRoutes></HomeRoutes>
                                 </ProtectedRoute>
                             }>
                             </Route>
-                            <Route path="*" element={<p>There's nothing here: 404!</p>}/>
                         </Routes>
-                    </Router>
-                </Container>
+                    </Container>
+                </Router>
             </UserContext.Provider>
         </div>
     );
