@@ -46,5 +46,5 @@ function getImgSrc(gift: GiftRecord) {
 function getDisplayedDate(gift: GiftRecord) {
     return gift.isUsed ?
         "utilisé le " + new Date(gift.usedAt).toLocaleString() :
-        "reçu le " + new Date(gift.createdAt).toLocaleDateString();
+        "reçu le " + new Date(gift.createdAt).toLocaleString();
 }

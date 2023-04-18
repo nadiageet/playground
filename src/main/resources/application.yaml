@@ -41,3 +41,6 @@ logging.level:
   com.example.playground.security: INFO
   # datasource proxy showing sql requests
   net.ttddyy.dsproxy.listener: debug
+
+app.zone-id: "Europe/Paris"
+app.job.gift.cron: "0 * * * * *"

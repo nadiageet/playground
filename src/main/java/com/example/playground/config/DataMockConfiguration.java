@@ -78,7 +78,6 @@ public class DataMockConfiguration {
                 guillaume.addGift(gift);
                 giftRepository.save(gift);
             }
-
         };
     }
 
