@@ -1,0 +1,31 @@
+.gift-container {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    border-radius: 25px;
+    border: 2px solid #73AD21;
+    transition: background-color .5s ease-out;
+    cursor: pointer;
+}
+
+.gift-date {
+    font-size: .7rem;
+}
+
+.gift-container.gift-used {
+    border: 2px solid #5b5b57;
+}
+
+.gift-container:hover {
+    background: rgba(114, 138, 70, 0.38);
+}
+
+.gift-container:hover.gift-used {
+    background: rgba(74, 75, 75, 0.32);
+}
+
+.gifts {
+    display: grid;
+    grid-gap: 3rem;
+    grid-template-columns: repeat(3, minmax(300px, 1fr));
+}

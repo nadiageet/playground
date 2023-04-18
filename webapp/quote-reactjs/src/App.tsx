@@ -14,6 +14,7 @@ import fetchClient from "./client/FetchClient";
 import {deleteLocalJwtToken, isJwtTokenPresent, saveLocalJwtToken} from "./auth/AuthUtils";
 import {LoginJwtResponse} from "./auth/LoginJwtResponse";
 import {HomeRoutes} from "./home/HomeRoutes";
+import {Toaster} from "react-hot-toast";
 
 function useAuthentication() {
 
@@ -71,6 +72,7 @@ function App() {
 
     return (
         <div className="App">
+            <Toaster position={"top-center"}/>
             <UserContext.Provider value={user}>
                 <Router>
                     <AppNavbar onLogout={handleLogout}></AppNavbar>

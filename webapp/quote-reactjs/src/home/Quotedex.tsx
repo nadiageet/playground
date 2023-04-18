@@ -1,6 +1,7 @@
 import {useQuery} from "react-query";
 import fetchClient from "../client/FetchClient";
 import {useState} from "react";
+import './quotedex.css'
 
 type QuotedexRecord = {
     id: number,

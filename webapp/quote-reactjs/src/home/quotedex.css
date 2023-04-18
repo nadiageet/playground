@@ -1,0 +1,44 @@
+
+.quotedex {
+    display: grid;
+    gap: 2rem;
+}
+
+@media screen and (min-width: 600px) {
+
+    .quotedex {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.quotedex .not-possessed {
+    font-weight: 300;
+}
+
+.quotedex .originator {
+    font-weight: 700;
+    font-size: .75rem;
+}
+
+.quotedex .not-possessed .originator {
+    font-weight: 500;
+}
+
+.quotedex .content {
+    font-style: italic;
+}
+
+
+.quotedex .quote {
+    position: relative;
+}
+
+.quotedex .quote .id {
+    color: rgba(71, 63, 63, 0.15);
+    font-size: 4rem;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0;
+    font-family: ui-sans-serif;
+}

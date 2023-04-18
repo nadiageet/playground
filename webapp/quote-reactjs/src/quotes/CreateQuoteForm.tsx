@@ -15,7 +15,10 @@ export function CreateQuoteForm() {
             content
         });
     }, {
-        onSuccess: () => setShowToast(true)
+        onSuccess: () => {
+            setShowToast(true)
+            setContent('')
+        }
     });
     const closeToast = () => setShowToast(false);
 
@@ -35,6 +38,7 @@ export function CreateQuoteForm() {
                 as="textarea"
                 placeholder="Leave a comment here"
                 style={{height: '100px'}}
+                value={content}
                 onChange={handleOnChange}
             />
         </FloatingLabel>
