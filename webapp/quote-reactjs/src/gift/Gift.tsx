@@ -29,8 +29,10 @@ export function Gift({gift, onClickHandler}: GiftProps) {
 function getGiftHeader(gift: GiftRecord) {
     if (gift.type === GiftType.RANDOM_QUOTE) {
         return "Gagnez une citation aléatoire";
+    } else if (gift.type === GiftType.GUARANTEE_RANDOM_QUOTE) {
+        return "Une nouvelle citation garantie"
     }
-    return ""
+    return "";
 }
 
 function getImgSrc(gift: GiftRecord) {
@@ -39,6 +41,9 @@ function getImgSrc(gift: GiftRecord) {
     }
     if (gift.type === GiftType.RANDOM_QUOTE) {
         return "gift-bronze.png";
+    }
+    if (gift.type === GiftType.GUARANTEE_RANDOM_QUOTE) {
+        return "gift-argent.png";
     }
     return "gift-icon.png"
 }

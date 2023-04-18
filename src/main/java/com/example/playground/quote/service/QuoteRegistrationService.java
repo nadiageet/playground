@@ -139,4 +139,9 @@ public class QuoteRegistrationService {
                 quoteRegistration.isProposedQuote()
         );
     }
+
+    public void receiveQuoteGuarantee() {
+        User user = getAuthenticatedUser();
+        findRandomQuote(user).ifPresent(quote -> registerQuoteForUser(user, quote));
+    }
 }

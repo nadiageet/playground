@@ -43,4 +43,4 @@ logging.level:
   net.ttddyy.dsproxy.listener: debug
 
 app.zone-id: "Europe/Paris"
-app.job.gift.cron: "0 * * * * *"
+app.job.gift.cron: "*/5 * * * * *"

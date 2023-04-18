@@ -1,6 +1,7 @@
 package com.example.playground.gift.service;
 
 import com.example.playground.gift.events.GiftRandomQuoteEvent;
+import com.example.playground.gift.events.GuaranteeRandomQuoteEvent;
 import com.example.playground.gift.model.Gift;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,9 @@ public class GiftDispatcher {
         log.debug("dispatching gift {} of type {}", gift.getId(), gift.getType());
         switch (gift.getType()) {
             case RANDOM_QUOTE -> publisher.publishEvent(new GiftRandomQuoteEvent());
+            case GUARANTEE_RANDOM_QUOTE -> {
+                publisher.publishEvent(new GuaranteeRandomQuoteEvent());
+            }
         }
     }
 }

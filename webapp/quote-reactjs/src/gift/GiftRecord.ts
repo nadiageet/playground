@@ -7,5 +7,6 @@ export type GiftRecord = {
 }
 
 export enum GiftType {
-    RANDOM_QUOTE = "RANDOM_QUOTE"
+    RANDOM_QUOTE = "RANDOM_QUOTE",
+    GUARANTEE_RANDOM_QUOTE = "GUARANTEE_RANDOM_QUOTE"
 }

@@ -1,6 +1,7 @@
 package com.example.playground.gift;
 
 import com.example.playground.gift.events.GiftRandomQuoteEvent;
+import com.example.playground.gift.events.GuaranteeRandomQuoteEvent;
 import com.example.playground.quote.service.QuoteRegistrationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -21,6 +22,12 @@ public class EventGiftListener {
     public void handle(GiftRandomQuoteEvent event) {
         log.info("handle event GIFT RANDOM QUOTE");
         quoteRegistrationService.receiveQuote();
+    }
+
+    @EventListener(GuaranteeRandomQuoteEvent.class)
+    public void handle(GuaranteeRandomQuoteEvent event) {
+        log.info("handle event GIFT RANDOM QUOTE");
+        quoteRegistrationService.receiveQuoteGuarantee();
     }
 }
 
