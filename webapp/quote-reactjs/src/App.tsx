@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import './App.css';
 import LoginForm from "./auth/LoginForm";
 import {createBrowserRouter, Outlet, RouterProvider} from 'react-router-dom';
-import ProtectedRoute from "./auth/ProtectedRoute";
+import AuthenticatedRoute from "./auth/AuthenticatedRoute";
 
 
 import UserContext from './auth/UserContext';
@@ -23,7 +23,6 @@ function App() {
     const [user, setUser] = useState<UserInfo | null>(null);
     const [jwt, setJwt] = useState<boolean>(isJwtTokenPresent());
 
-    console.log({jwt, user});
     const query = accountQuery;
     const {data} = useQuery([query.queryKey], query.queryFn, {
         enabled: jwt,
@@ -38,13 +37,10 @@ function App() {
         setUser(data ?? null)
     }, [data])
 
-    console.count('APP');
-
     function handleLogin(loginResponse: LoginJwtResponse) {
         console.log("User successfully logged in")
         saveLocalJwtToken(loginResponse.jwt);
         setJwt(true);
-        // queryClient.invalidateQueries("account").then(() => console.log("query invalidated after login"));
     }
 
     function handleLogout(): void {
@@ -57,11 +53,8 @@ function App() {
 
     const accountLoader = async () => {
         const jwt = isJwtTokenPresent();
-        console.count("account loader");
         const query = accountQuery;
         const cached = queryClient.getQueryData(query.queryKey);
-        console.log("cached", cached);
-        console.log(jwt);
         return (
             cached ??
             await queryClient.fetchQuery(query.queryKey, query.queryFn, {staleTime: 1000})
@@ -88,7 +81,7 @@ function App() {
                 },
                 {
                     path: "/*",
-                    element: <ProtectedRoute> <Outlet/> </ProtectedRoute>,
+                    element: <AuthenticatedRoute> <Outlet/> </AuthenticatedRoute>,
                     children: collectorRoutes,
                     loader: accountLoader
                 },

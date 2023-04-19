@@ -15,7 +15,7 @@ interface LoginFormProps {
 const USERNAME_KEY = "username";
 export default function LoginForm({hasLocalJwt, onSuccessfullyLogin}: LoginFormProps) {
     const [userName, setUserName] = useState<string>(localStorage.getItem(USERNAME_KEY) || '');
-    const [password, setPassword] = useState<string>('');
+    const [password, setPassword] = useState<string>('pass');
 
     if (hasLocalJwt) {
         console.log("User already has a JWT token : redirecting from '/login' to '/'")

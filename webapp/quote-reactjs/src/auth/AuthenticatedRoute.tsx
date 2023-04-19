@@ -5,9 +5,9 @@ interface PrivateRouteProps {
     children?: any
 }
 
-function ProtectedRoute({
-                            children,
-                        }: PrivateRouteProps) {
+function AuthenticatedRoute({
+                                children,
+                            }: PrivateRouteProps) {
 
     const user = useLoaderData();
     console.log("user from loader data : ", user);
@@ -20,4 +20,4 @@ function ProtectedRoute({
     }
 }
 
-export default ProtectedRoute;
+export default AuthenticatedRoute;
