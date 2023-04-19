@@ -10,27 +10,22 @@ import ProtectedRoute from "./auth/ProtectedRoute";
 import UserContext from './auth/UserContext';
 import {UserInfo} from "./auth/UserInfo";
 import {useQuery} from 'react-query';
-import fetchClient from "./client/FetchClient";
 import {deleteLocalJwtToken, isJwtTokenPresent, saveLocalJwtToken} from "./auth/AuthUtils";
 import {LoginJwtResponse} from "./auth/LoginJwtResponse";
 import {HomeRoutes} from "./home/HomeRoutes";
 import {Toaster} from "react-hot-toast";
+import {queryClient} from "./client/QueryClientConfiguration";
+import {accountQuery} from "./auth/AccountQuery";
+
 
 function useAuthentication() {
 
     const [user, setUser] = useState<UserInfo | null>(null);
     const [jwt, setJwt] = useState<boolean>(isJwtTokenPresent());
 
-    useQuery(["account", jwt], () => {
-        if (jwt) {
-            console.log("User is authenticated thanks to the JWT Token in Local Storage. Proceeding to fetch its account information from server...");
-            return fetchClient.get<UserInfo>('/api/v1/account')
-                .then(axiosResponse => axiosResponse.data);
-        } else {
-            console.log("NO JWT found => not fetching user account");
-            return Promise.resolve(null);
-        }
-    }, {
+    console.log({jwt});
+    const query = accountQuery;
+    useQuery([query.queryKey, jwt], query.queryFn, {
         enabled: jwt,
         onSuccess: data => {
             console.log("User information retrieved from server successfully");
@@ -41,6 +36,7 @@ function useAuthentication() {
             deleteLocalJwtToken();
             setJwt(false);
         },
+        staleTime: 60_000,
         retry: false
     })
 
@@ -68,16 +64,17 @@ function App() {
         deleteLocalJwtToken();
         setUser(null);
         setJwt(false);
+        // queryClient.invalidateQueries("account");
     }
 
-    // const accountLoader = (queryClient: QueryClient, fetchClient: AxiosInstance) =>
-    //     async () => {
-    //         const query = accountQuery(fetchClient, isJwtTokenPresent());
-    //         return (
-    //             queryClient.getQueryData(query.key) ??
-    //             await queryClient.fetchQuery(query.key, query.query, {staleTime: 60_000})
-    //         )
-    //     }
+    const accountLoader = (jwt: boolean) => async () => {
+        console.count("account loader");
+        const query = accountQuery;
+        return (
+            queryClient.getQueryData([query.queryKey, jwt]) ??
+            await queryClient.fetchQuery([query.queryKey, jwt], query.queryFn, {staleTime: 60_000})
+        )
+    }
 
 
     const HeaderLayout = () => {
@@ -104,7 +101,7 @@ function App() {
                 {
                     path: "/*",
                     element: <ProtectedRoute hasLocalJwt={jwt} children={<HomeRoutes/>}/>,
-                    // loader: accountLoader(queryClient, fetchClient)
+                    loader: accountLoader(jwt)
                 }
             ]
         }
