@@ -3,7 +3,7 @@ import './App.css';
 import AppNavbar from "./components/navbar";
 import LoginForm from "./auth/LoginForm";
 import Container from "react-bootstrap/Container";
-import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import {createBrowserRouter, Outlet, RouterProvider} from 'react-router-dom';
 import ProtectedRoute from "./auth/ProtectedRoute";
 
 
@@ -70,30 +70,53 @@ function App() {
         setJwt(false);
     }
 
+    // const accountLoader = (queryClient: QueryClient, fetchClient: AxiosInstance) =>
+    //     async () => {
+    //         const query = accountQuery(fetchClient, isJwtTokenPresent());
+    //         return (
+    //             queryClient.getQueryData(query.key) ??
+    //             await queryClient.fetchQuery(query.key, query.query, {staleTime: 60_000})
+    //         )
+    //     }
+
+
+    const HeaderLayout = () => {
+        return (<>
+            <header>
+                <AppNavbar onLogout={handleLogout}/>
+            </header>
+            <Container>
+                <Outlet/>
+            </Container>
+        </>);
+    }
+
+    const router = createBrowserRouter([
+        {
+            element: <HeaderLayout/>,
+            // loader: rootLoader,
+            children: [
+                {
+                    path: "/login",
+                    element: <LoginForm hasLocalJwt={jwt}
+                                        onSuccessfullyLogin={handleLogin}/>
+                },
+                {
+                    path: "/*",
+                    element: <ProtectedRoute hasLocalJwt={jwt} children={<HomeRoutes/>}/>,
+                    // loader: accountLoader(queryClient, fetchClient)
+                }
+            ]
+        }
+
+
+    ])
+
     return (
         <div className="App">
             <Toaster position={"top-center"}/>
-            <UserContext.Provider value={user}>
-                <Router>
-                    <AppNavbar onLogout={handleLogout}></AppNavbar>
-                    <Container>
-                        <Routes>
-                            <Route path={"/login"}
-                                   element={
-                                       <LoginForm
-                                           hasLocalJwt={jwt}
-                                           onSuccessfullyLogin={handleLogin}/>
-                                   }>
-                            </Route>
-                            <Route path={"/*"} element={
-                                <ProtectedRoute hasLocalJwt={jwt}>
-                                    <HomeRoutes></HomeRoutes>
-                                </ProtectedRoute>
-                            }>
-                            </Route>
-                        </Routes>
-                    </Container>
-                </Router>
+            <UserContext.Provider value={user || null}>
+                <RouterProvider router={router}/>
             </UserContext.Provider>
         </div>
     );
