@@ -140,6 +140,18 @@ public class QuoteRegistrationService {
         );
     }
 
+
+    public void openPackForUser(User user, int packSize) {
+        log.info("opening pack of {} quotes for user {}", packSize, user.getUserName());
+        while (packSize-- > 0) {
+            long count = quoteRepository.count();
+            Quote quoteReceived = quoteRepository.findAll(PageRequest.of((int) (Math.random() * count), 1)).getContent().get(0);
+            QuoteRegistration quoteRegistration = new QuoteRegistration();
+            quoteRegistration.setQuote(quoteReceived);
+            user.addRegistration(quoteRegistration);
+        }
+    }
+
     public void receiveQuoteGuarantee() {
         User user = getAuthenticatedUser();
         findRandomQuote(user).ifPresent(quote -> registerQuoteForUser(user, quote));

@@ -2,5 +2,6 @@ package com.example.playground.gift.model;
 
 public enum GiftType {
     RANDOM_QUOTE,
-    GUARANTEE_RANDOM_QUOTE
+    GUARANTEE_RANDOM_QUOTE,
+    PACK_OF_QUOTE
 }

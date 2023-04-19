@@ -28,12 +28,15 @@ function AppNavbar({onLogout}: AppNavbarProps) {
         <>
             <Navbar bg="light" variant="light" className={"mb-5"}>
                 <Container>
-                    <Navbar.Brand className={"navbar-brand"} onClick={navigateToHome}>Quote collector</Navbar.Brand>
+                    <Navbar.Brand className={"navbar-brand"} onClick={navigateToHome}>
+                        <img src={"quote.png"} alt="logo"/> Collector
+                    </Navbar.Brand>
 
                     {userContext && (
 
-                        <NavDropdown title={userContext.userName}>
-                            <NavDropdown.Item onClick={onLogout}>Se déconnecter</NavDropdown.Item>
+                        <NavDropdown style={{fontFamily: "cursive", fontSize: "1.5rem"}} title={userContext.userName}>
+                            <NavDropdown.Item style={{fontFamily: "sans-serif"}} onClick={onLogout}>Se
+                                déconnecter</NavDropdown.Item>
                         </NavDropdown>
 
                     )}

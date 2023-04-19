@@ -10,7 +10,7 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.data.RepositoryItemReader;
+import org.springframework.batch.item.data.builder.RepositoryItemReaderBuilder;
 import org.springframework.batch.item.data.builder.RepositoryItemWriterBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,11 +38,12 @@ public class GiftBatchConfiguration {
 
     @Bean
     ItemReader<User> userItemReader(UserRepository userRepository) {
-        RepositoryItemReader<User> reader = new RepositoryItemReader<>();
-        reader.setRepository(userRepository);
-        reader.setSort(Map.of("id", Sort.Direction.ASC));
-        reader.setMethodName("findAll");
-        return reader;
+        return new RepositoryItemReaderBuilder<User>()
+                .name("readUsersFromDatabase")
+                .repository(userRepository)
+                .sorts(Map.of("id", Sort.Direction.ASC))
+                .methodName("findAll")
+                .build();
     }
 
     @Bean

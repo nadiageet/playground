@@ -7,7 +7,6 @@ import com.example.playground.quote.api.request.CreateQuoteRequest;
 import com.example.playground.quote.api.request.GenerateQuoteRequest;
 import com.example.playground.quote.api.request.GiftQuoteRequest;
 import com.example.playground.quote.api.response.GetQuoteRegistrationsResponse;
-import com.example.playground.quote.api.response.GetQuotedexResponse;
 import com.example.playground.quote.domain.Quote;
 import com.example.playground.quote.domain.QuoteRegistration;
 import com.example.playground.quote.service.QuoteRegistrationService;
@@ -56,13 +55,6 @@ public class QuoteController {
             log.error("error contacting random quote client", e);
             return "";
         }
-    }
-
-    @GetMapping("/quote/receive")
-    @ApiModelProperty("receive a free quote")
-    public GetQuotedexResponse receiveQuote() {
-        log.debug("request received to receive a random quote");
-        return quoteRegistrationService.receiveQuote();
     }
 
     @PostMapping("/quote/random")

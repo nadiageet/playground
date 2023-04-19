@@ -24,7 +24,7 @@ export function Quotedex() {
 
     const [onlyShowPossessed, setOnlyShowPossessed] = useState(false);
 
-    const {data, isFetching} = useQuery("quotedex", () => {
+    const {data: quotedex, isFetching} = useQuery("quotedex", () => {
         return fetchClient.get<QuotedexRecord[]>('/api/v2/quotedex')
             .then(axiosResponse => axiosResponse.data);
     })
@@ -32,11 +32,31 @@ export function Quotedex() {
         return <div>fetching...</div>
     }
 
+    if (!quotedex) {
+        return <></>
+    }
+
     function handleOnChange(e: any) {
         setOnlyShowPossessed(e.target.checked);
     }
 
-    const quotes = data?.filter(e => !onlyShowPossessed || e.numberOfQuotes > 0)
+    const totalQuotes = quotedex.length;
+
+    function countPossessedQuotes(quotedex: QuotedexRecord[]) {
+        return quotedex.reduce((n, val) => {
+            if (val.numberOfQuotes === 0) {
+                return n;
+            } else {
+                return n + 1;
+            }
+        }, 0);
+    }
+
+    const possessedCount = countPossessedQuotes(quotedex);
+
+    const isFullQuotedex = totalQuotes === possessedCount;
+
+    const quotes = quotedex.filter(e => !onlyShowPossessed || e.numberOfQuotes > 0)
         .map(quote => {
             return <Quote id={quote.id}
                           key={quote.id}
@@ -46,15 +66,20 @@ export function Quotedex() {
             />
         });
     return <>
-        <div className="form-check mb-4">
-            <input className="form-check-input"
-                   type="checkbox"
-                   id="flexCheckDefault"
-                   onChange={handleOnChange}/>
-            <label className="form-check-label" htmlFor="flexCheckDefault">
-                Masquer les citations non possédées
-            </label>
+        <div className="quotedex-header">
+            <div className="form-check mb-4">
+                <input className="form-check-input"
+                       type="checkbox"
+                       id="flexCheckDefault"
+                       onChange={handleOnChange}/>
+                <label className="form-check-label" htmlFor="flexCheckDefault">
+                    Masquer les citations non possédées
+                </label>
+            </div>
+            <p className={"alert " + (isFullQuotedex ? "alert-success" : "alert-secondary")}>
+                <strong> {possessedCount} / {totalQuotes} </strong></p>
         </div>
+
         <hr/>
         <div className={"quotedex"}>
             {quotes}

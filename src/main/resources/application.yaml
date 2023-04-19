@@ -42,5 +42,10 @@ logging.level:
   # datasource proxy showing sql requests
   net.ttddyy.dsproxy.listener: debug
 
-app.zone-id: "Europe/Paris"
-app.job.gift.cron: "*/5 * * * * *"
+app:
+  zone-id: "Europe/Paris"
+  job.gift.cron: "*/15 * * * * *"
+  features:
+    gift:
+      pack-size: 2
+

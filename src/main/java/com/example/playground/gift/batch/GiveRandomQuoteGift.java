@@ -12,7 +12,9 @@ import java.security.SecureRandom;
 public class GiveRandomQuoteGift implements ItemProcessor<User, Gift> {
     private static GiftType getRandomType() {
         double v = new SecureRandom().nextDouble();
-        if (v < .1) {
+        if (v < .25) {
+            return GiftType.PACK_OF_QUOTE;
+        } else if (v < .5) {
             return GiftType.GUARANTEE_RANDOM_QUOTE;
         } else {
             return GiftType.RANDOM_QUOTE;

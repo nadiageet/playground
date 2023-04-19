@@ -42,3 +42,8 @@
     padding: 0;
     font-family: ui-sans-serif;
 }
+
+.quotedex-header {
+    display: flex;
+    justify-content: space-between;
+}
