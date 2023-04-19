@@ -2,7 +2,7 @@ import React from 'react';
 import {Navigate, useLoaderData} from 'react-router-dom';
 
 interface PrivateRouteProps {
-    children: any
+    children?: any
 }
 
 function ProtectedRoute({

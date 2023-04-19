@@ -1,10 +1,7 @@
-import {Link, Route, Routes} from "react-router-dom";
-import {Quotedex} from "./Quotedex";
-import {CreateQuoteForm} from "../quotes/CreateQuoteForm";
-import {GiftList} from "../gift/GiftList";
+import {Link} from "react-router-dom";
 import React from "react";
 
-function Home() {
+export function Home() {
     return <div className={"home-btn-grp"}>
         {/*<Nav.Link href="/quotedex">Active</Nav.Link>*/}
         <Link to={"/quotedex"} className={"button-17"}>Quotedex</Link>
@@ -13,14 +10,4 @@ function Home() {
         <Link to={"/admin/fetch-rapid-api"} className={"button-17"}>Admin</Link>
         {/*<button className={"button-17"}>Quotedex</button>*/}
     </div>;
-}
-
-export function HomeRoutes() {
-
-    return <Routes>
-        <Route path={"/"} element={<Home/>}/>
-        <Route path={"/quotes/create"} element={<CreateQuoteForm/>}/>
-        <Route path={"/quotedex"} element={<Quotedex/>}/>
-        <Route path={"/gifts"} element={<GiftList/>}/>
-    </Routes>
 }

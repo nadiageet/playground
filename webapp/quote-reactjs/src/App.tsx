@@ -1,8 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
-import AppNavbar from "./components/navbar";
 import LoginForm from "./auth/LoginForm";
-import Container from "react-bootstrap/Container";
 import {createBrowserRouter, Outlet, RouterProvider} from 'react-router-dom';
 import ProtectedRoute from "./auth/ProtectedRoute";
 
@@ -12,11 +10,13 @@ import {UserInfo} from "./auth/UserInfo";
 import {useQuery} from 'react-query';
 import {deleteLocalJwtToken, isJwtTokenPresent, saveLocalJwtToken} from "./auth/AuthUtils";
 import {LoginJwtResponse} from "./auth/LoginJwtResponse";
-import {HomeRoutes} from "./home/HomeRoutes";
 import {Toaster} from "react-hot-toast";
 import {queryClient} from "./client/QueryClientConfiguration";
 import {accountQuery} from "./auth/AccountQuery";
 import ProtectedAdminRoute from "./auth/ProtectedAdminRoute";
+import {collectorRoutes} from "./routes/collector.route";
+import {adminRoutes} from "./routes/admin.route";
+import {HeaderLayout} from "./components/HeaderLayout";
 
 
 function App() {
@@ -69,21 +69,11 @@ function App() {
     }
 
 
-    const HeaderLayout = () => {
-        return (<>
-            <header>
-                <AppNavbar onLogout={handleLogout}/>
-            </header>
-            <Container>
-                <Outlet/>
-            </Container>
-        </>);
-    }
+
 
     const router = createBrowserRouter([
         {
-            element: <HeaderLayout/>,
-            // loader: rootLoader,
+            element: <HeaderLayout onLogout={handleLogout}/>,
             children: [
                 {
                     path: "/login",
@@ -91,25 +81,19 @@ function App() {
                                         onSuccessfullyLogin={handleLogin}/>
                 },
                 {
-                    path: "/*",
-                    element: <ProtectedRoute children={<HomeRoutes/>}/>,
+                    path: "/admin/*",
+                    element: <ProtectedAdminRoute> <Outlet/></ProtectedAdminRoute>,
+                    children: adminRoutes,
                     loader: accountLoader
                 },
                 {
-                    path: "/admin/*",
-                    element: <ProtectedAdminRoute> <Outlet/></ProtectedAdminRoute>,
-                    children: [
-                        {
-                            path: "fetch-rapid-api",
-                            element: <p>FETCH RAPID API</p>
-                        }
-                    ],
+                    path: "/*",
+                    element: <ProtectedRoute> <Outlet/> </ProtectedRoute>,
+                    children: collectorRoutes,
                     loader: accountLoader
-                }
+                },
             ]
         }
-
-
     ])
 
     return (
