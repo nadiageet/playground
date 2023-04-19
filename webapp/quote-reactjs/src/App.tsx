@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
 import AppNavbar from "./components/navbar";
 import LoginForm from "./auth/LoginForm";
@@ -16,47 +16,35 @@ import {HomeRoutes} from "./home/HomeRoutes";
 import {Toaster} from "react-hot-toast";
 import {queryClient} from "./client/QueryClientConfiguration";
 import {accountQuery} from "./auth/AccountQuery";
+import ProtectedAdminRoute from "./auth/ProtectedAdminRoute";
 
 
-function useAuthentication() {
-
+function App() {
     const [user, setUser] = useState<UserInfo | null>(null);
     const [jwt, setJwt] = useState<boolean>(isJwtTokenPresent());
 
-    console.log({jwt});
+    console.log({jwt, user});
     const query = accountQuery;
-    useQuery([query.queryKey, jwt], query.queryFn, {
+    const {data} = useQuery([query.queryKey], query.queryFn, {
         enabled: jwt,
-        onSuccess: data => {
-            console.log("User information retrieved from server successfully");
-            setUser(data)
-        },
         onError: error => {
             console.error(error)
             deleteLocalJwtToken();
             setJwt(false);
         },
-        staleTime: 60_000,
-        retry: false
-    })
+    });
 
-    return {
-        user, setUser,
-        jwt, setJwt,
-    }
-}
+    useEffect(() => {
+        setUser(data ?? null)
+    }, [data])
 
-
-function App() {
-    const {
-        user, setUser,
-        jwt, setJwt,
-    } = useAuthentication();
+    console.count('APP');
 
     function handleLogin(loginResponse: LoginJwtResponse) {
         console.log("User successfully logged in")
         saveLocalJwtToken(loginResponse.jwt);
         setJwt(true);
+        // queryClient.invalidateQueries("account").then(() => console.log("query invalidated after login"));
     }
 
     function handleLogout(): void {
@@ -64,16 +52,20 @@ function App() {
         deleteLocalJwtToken();
         setUser(null);
         setJwt(false);
-        // queryClient.invalidateQueries("account");
+        queryClient.invalidateQueries("account").then();
     }
 
-    const accountLoader = (jwt: boolean) => async () => {
+    const accountLoader = async () => {
+        const jwt = isJwtTokenPresent();
         console.count("account loader");
         const query = accountQuery;
+        const cached = queryClient.getQueryData(query.queryKey);
+        console.log("cached", cached);
+        console.log(jwt);
         return (
-            queryClient.getQueryData([query.queryKey, jwt]) ??
-            await queryClient.fetchQuery([query.queryKey, jwt], query.queryFn, {staleTime: 60_000})
-        )
+            cached ??
+            await queryClient.fetchQuery(query.queryKey, query.queryFn, {staleTime: 1000})
+        );
     }
 
 
@@ -100,8 +92,19 @@ function App() {
                 },
                 {
                     path: "/*",
-                    element: <ProtectedRoute hasLocalJwt={jwt} children={<HomeRoutes/>}/>,
-                    loader: accountLoader(jwt)
+                    element: <ProtectedRoute children={<HomeRoutes/>}/>,
+                    loader: accountLoader
+                },
+                {
+                    path: "/admin/*",
+                    element: <ProtectedAdminRoute> <Outlet/></ProtectedAdminRoute>,
+                    children: [
+                        {
+                            path: "fetch-rapid-api",
+                            element: <p>FETCH RAPID API</p>
+                        }
+                    ],
+                    loader: accountLoader
                 }
             ]
         }
@@ -112,7 +115,7 @@ function App() {
     return (
         <div className="App">
             <Toaster position={"top-center"}/>
-            <UserContext.Provider value={user || null}>
+            <UserContext.Provider value={user}>
                 <RouterProvider router={router}/>
             </UserContext.Provider>
         </div>

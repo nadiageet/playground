@@ -18,7 +18,7 @@ export default function LoginForm({hasLocalJwt, onSuccessfullyLogin}: LoginFormP
     const [password, setPassword] = useState<string>('');
 
     if (hasLocalJwt) {
-        console.log("User already authenticated : redirecting from '/login' to '/'")
+        console.log("User already has a JWT token : redirecting from '/login' to '/'")
         return <Navigate to={"/"}/>
     }
 

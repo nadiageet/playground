@@ -1,17 +1,17 @@
-import React, {useContext} from 'react';
-import {Navigate} from 'react-router-dom';
-import UserContext from "./UserContext";
+import React from 'react';
+import {Navigate, useLoaderData} from 'react-router-dom';
+import {UserInfo} from "./UserInfo";
 
 interface PrivateRouteProps {
-    children: any
+    children?: any
 }
 
 function ProtectedAdminRoute({
                                  children,
                              }: PrivateRouteProps) {
 
-    const user = useContext(UserContext)
 
+    const user = useLoaderData() as UserInfo | null;
     if (user?.roles?.includes("ADMIN")) {
         return children;
     } else {
