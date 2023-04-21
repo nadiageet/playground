@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import './App.css';
 import {createBrowserRouter, Outlet, RouterProvider} from 'react-router-dom';
 import AuthenticatedRoute from "./auth/components/AuthenticatedRoute";
@@ -28,15 +28,12 @@ function App() {
 
     const {data} = useQuery([ACCOUNT_QUERY], fetchAccount, {
         enabled: !!jwt,
+        onSuccess: (data) => setUser(data),
         onError: error => {
             console.error(error)
             setJwt(null);
         },
     });
-
-    useEffect(() => {
-        setUser(data ?? null)
-    }, [data])
 
     function handleLogin(loginResponse: LoginJwtResponse) {
         console.log("User successfully logged in")
