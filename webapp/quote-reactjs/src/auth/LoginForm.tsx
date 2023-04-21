@@ -1,27 +1,19 @@
 import Button from 'react-bootstrap/Button';
-
 import Form from 'react-bootstrap/Form';
-import {useState} from "react";
-import {LoginJwtResponse} from "./LoginJwtResponse";
-import {Navigate} from "react-router-dom";
+import React, {useState} from "react";
 import fetchClient from "../client/FetchClient";
+import useLocalStorage, {LocalStorageContainer} from "../hooks/UseLocalStorage";
+import {LoginJwtResponse} from "./dto/LoginJwtResponse";
 
 
 interface LoginFormProps {
-    hasLocalJwt: boolean
     onSuccessfullyLogin: (jwt: LoginJwtResponse) => void
 }
 
 const USERNAME_KEY = "username";
-export default function LoginForm({hasLocalJwt, onSuccessfullyLogin}: LoginFormProps) {
-    const [userName, setUserName] = useState<string>(localStorage.getItem(USERNAME_KEY) || '');
+export default function LoginForm({onSuccessfullyLogin}: LoginFormProps) {
+    const [userName, setUserName] = useLocalStorage<LocalStorageContainer<string>>('username');
     const [password, setPassword] = useState<string>('pass');
-
-    if (hasLocalJwt) {
-        console.log("User already has a JWT token : redirecting from '/login' to '/'")
-        return <Navigate to={"/"}/>
-    }
-
 
     async function handleSubmit(event: any) {
         event.preventDefault();
@@ -29,16 +21,15 @@ export default function LoginForm({hasLocalJwt, onSuccessfullyLogin}: LoginFormP
 
         try {
             const response = await fetchClient.post<LoginJwtResponse>('/api/v1/auth/login', {
-                userName,
+                userName: userName?.value,
                 password
             });
             console.log("Server response after login : ", response.data);
-            localStorage.setItem(USERNAME_KEY, userName || '');
             onSuccessfullyLogin(response.data);
         } catch (e: any) {
             if (e.response.status === 403) {
                 setPassword('')
-                alert("bad username / password");
+                alert("bad credentials");
             }
             console.error(e);
         }
@@ -46,13 +37,17 @@ export default function LoginForm({hasLocalJwt, onSuccessfullyLogin}: LoginFormP
 
     }
 
+    function handleUsernameChange(e: any) {
+        setUserName({value: e?.target?.value});
+    }
+
     return (
         <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Login</Form.Label>
                 <Form.Control
-                    value={userName}
-                    onChange={e => setUserName(e.target.value)}
+                    value={userName?.value || ''}
+                    onChange={(e) => handleUsernameChange(e)}
                     placeholder="Votre login..."/>
             </Form.Group>
 

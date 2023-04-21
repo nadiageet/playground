@@ -1,6 +1,6 @@
 import React from 'react';
 import {Navigate, useLoaderData} from 'react-router-dom';
-import {UserInfo} from "./UserInfo";
+import {UserInfo} from "../dto/UserInfo";
 
 interface PrivateRouteProps {
     children?: any

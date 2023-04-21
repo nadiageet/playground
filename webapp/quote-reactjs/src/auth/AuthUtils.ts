@@ -1,7 +1,9 @@
-const JWT_KEY = "react-jwt";
+import {getValueFromStorage, LocalStorageContainer} from "../hooks/UseLocalStorage";
+
+export const JWT_KEY = "react-jwt";
 
 export function getLocalJwtToken(): string | null {
-    return localStorage.getItem(JWT_KEY);
+    return getValueFromStorage<LocalStorageContainer<string>>(JWT_KEY)?.value ?? null
 };
 
 

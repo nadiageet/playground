@@ -1,6 +1,6 @@
 import {Link} from "react-router-dom";
 import React from "react";
-import {useAuthentication} from "../auth/useAuthentication";
+import {useAuthentication} from "../auth/hooks/useAuthentication";
 
 export function Home() {
     const {isAdmin} = useAuthentication();

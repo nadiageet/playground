@@ -5,6 +5,11 @@ interface PrivateRouteProps {
     children?: any
 }
 
+/**
+ * Needs a loader providing the UserInfo
+ *
+ * redirect to /login if no authentication
+ */
 function AuthenticatedRoute({
                                 children,
                             }: PrivateRouteProps) {

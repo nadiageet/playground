@@ -1,35 +1,36 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
-import LoginForm from "./auth/LoginForm";
 import {createBrowserRouter, Outlet, RouterProvider} from 'react-router-dom';
-import AuthenticatedRoute from "./auth/AuthenticatedRoute";
+import AuthenticatedRoute from "./auth/components/AuthenticatedRoute";
 
 
 import UserContext from './auth/UserContext';
-import {UserInfo} from "./auth/UserInfo";
+import {UserInfo} from "./auth/dto/UserInfo";
 import {useQuery} from 'react-query';
-import {deleteLocalJwtToken, isJwtTokenPresent, saveLocalJwtToken} from "./auth/AuthUtils";
-import {LoginJwtResponse} from "./auth/LoginJwtResponse";
+import {isJwtTokenPresent, JWT_KEY} from "./auth/AuthUtils";
+import {LoginJwtResponse} from "./auth/dto/LoginJwtResponse";
 import {Toaster} from "react-hot-toast";
 import {queryClient} from "./client/QueryClientConfiguration";
-import {accountQuery} from "./auth/AccountQuery";
-import ProtectedAdminRoute from "./auth/ProtectedAdminRoute";
+import {ACCOUNT_QUERY, fetchAccount} from "./auth/queries/AccountQuery";
+import ProtectedAdminRoute from "./auth/components/ProtectedAdminRoute";
 import {collectorRoutes} from "./routes/collector.route";
 import {adminRoutes} from "./routes/admin.route";
 import {HeaderLayout} from "./components/HeaderLayout";
+import useLocalStorage from "./hooks/UseLocalStorage";
+import {JwtToken} from "./auth/dto/JwtToken";
+import LoginForm from "./auth/LoginForm";
+import AnonymousOnlyRoute from "./auth/components/AnonymousOnlyRoute";
 
 
 function App() {
+    const [jwt, setJwt] = useLocalStorage<JwtToken>(JWT_KEY);
     const [user, setUser] = useState<UserInfo | null>(null);
-    const [jwt, setJwt] = useState<boolean>(isJwtTokenPresent());
 
-    const query = accountQuery;
-    const {data} = useQuery([query.queryKey], query.queryFn, {
-        enabled: jwt,
+    const {data} = useQuery([ACCOUNT_QUERY], fetchAccount, {
+        enabled: !!jwt,
         onError: error => {
             console.error(error)
-            deleteLocalJwtToken();
-            setJwt(false);
+            setJwt(null);
         },
     });
 
@@ -39,29 +40,29 @@ function App() {
 
     function handleLogin(loginResponse: LoginJwtResponse) {
         console.log("User successfully logged in")
-        saveLocalJwtToken(loginResponse.jwt);
-        setJwt(true);
+        console.log("set jwt " + loginResponse.jwt);
+        setJwt({value: loginResponse.jwt});
+        queryClient.invalidateQueries([ACCOUNT_QUERY]).then();
     }
 
     function handleLogout(): void {
         console.log("User logged out")
-        deleteLocalJwtToken();
         setUser(null);
-        setJwt(false);
-        queryClient.invalidateQueries("account").then();
+        console.log("remove jwt token")
+        setJwt(null);
+        queryClient.invalidateQueries(ACCOUNT_QUERY).then();
     }
 
-    const accountLoader = async () => {
-        const jwt = isJwtTokenPresent();
-        const query = accountQuery;
-        const cached = queryClient.getQueryData(query.queryKey);
-        return (
-            cached ??
-            await queryClient.fetchQuery(query.queryKey, query.queryFn, {staleTime: 1000})
-        );
-    }
-
-
+    const accountLoader =
+        async () => {
+            if (!isJwtTokenPresent()) {
+                return null;
+            }
+            return (
+                queryClient.getQueryData([ACCOUNT_QUERY]) ??
+                await queryClient.fetchQuery([ACCOUNT_QUERY], fetchAccount)
+            );
+        }
 
 
     const router = createBrowserRouter([
@@ -70,8 +71,9 @@ function App() {
             children: [
                 {
                     path: "/login",
-                    element: <LoginForm hasLocalJwt={jwt}
-                                        onSuccessfullyLogin={handleLogin}/>
+                    element: <AnonymousOnlyRoute>
+                        <LoginForm onSuccessfullyLogin={handleLogin}/>
+                    </AnonymousOnlyRoute>
                 },
                 {
                     path: "/admin/*",
@@ -88,6 +90,7 @@ function App() {
             ]
         }
     ])
+
 
     return (
         <div className="App">

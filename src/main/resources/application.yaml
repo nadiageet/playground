@@ -44,8 +44,8 @@ logging.level:
 
 app:
   zone-id: "Europe/Paris"
-  job.gift.cron: "*/15 * * * * *"
+  job.gift.cron: "0 * * * * *"
   features:
     gift:
-      pack-size: 2
+      pack.size: 2
 

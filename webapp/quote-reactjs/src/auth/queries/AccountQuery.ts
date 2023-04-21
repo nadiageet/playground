@@ -1,14 +1,11 @@
-import {isJwtTokenPresent} from "./AuthUtils";
-import fetchClient from "../client/FetchClient";
-import {UserInfo} from "./UserInfo";
+import {isJwtTokenPresent} from "../AuthUtils";
+import fetchClient from "../../client/FetchClient";
+import {UserInfo} from "../dto/UserInfo";
 
 
-export const accountQuery = {
-    queryKey: "account",
-    queryFn: fetchAccount
-}
+export const ACCOUNT_QUERY = "account";
 
-function fetchAccount() {
+export function fetchAccount() {
     if (isJwtTokenPresent()) {
         console.log("User is authenticated thanks to the JWT Token in Local Storage. Proceeding to fetch its account information from server...");
         return fetchClient.get<UserInfo>('/api/v1/account')

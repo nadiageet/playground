@@ -1,5 +1,5 @@
 import {createContext} from "react";
-import {UserInfo} from "./UserInfo";
+import {UserInfo} from "./dto/UserInfo";
 
 
 const UserContext = createContext<UserInfo | null>(null)
