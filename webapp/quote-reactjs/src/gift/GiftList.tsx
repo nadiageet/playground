@@ -6,6 +6,7 @@ import React, {useEffect, useState} from "react";
 import toast from 'react-hot-toast';
 import axios from "axios";
 import {Gift} from "./Gift";
+import {fetchGifts, GIFT_QUERY_KEY} from "../auth/queries/GiftQuery";
 
 toast.error('Something went wrong')
 
@@ -21,7 +22,7 @@ export function GiftList() {
     }, {
         onSuccess: () => {
             toast.success("Le cadeau a bien été utilisé");
-            queryClient.invalidateQueries("gifts");
+            queryClient.invalidateQueries(GIFT_QUERY_KEY);
         },
     });
 
@@ -34,13 +35,13 @@ export function GiftList() {
     }, [error])
 
 
-    const {data, isLoading} = useQuery("gifts", () => {
-        return fetchClient.get<GiftRecord[]>('/api/v1/gift')
-            .then(axiosResponse => axiosResponse.data);
-    });
+    const {data, isLoading} = useQuery(GIFT_QUERY_KEY, fetchGifts,
+        {
+            staleTime: 6000,
+        });
 
     if (isLoading) {
-        return <p>Loading...</p>
+        return <p>Nous cherchons vos cadeaux...</p>
     }
 
 

@@ -1,16 +1,15 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import './App.css';
 import {createBrowserRouter, RouterProvider} from 'react-router-dom';
 
 
 import UserContext from './auth/UserContext';
 import {UserInfo} from "./auth/dto/UserInfo";
-import {useQuery} from 'react-query';
+import {QueryClient, useQuery, useQueryClient} from 'react-query';
 import {isJwtTokenPresent, JWT_KEY} from "./auth/AuthUtils";
 import {LoginJwtResponse} from "./auth/dto/LoginJwtResponse";
 import {Toaster} from "react-hot-toast";
-import {queryClient} from "./client/QueryClientConfiguration";
-import {ACCOUNT_QUERY, fetchAccount} from "./auth/queries/AccountQuery";
+import {ACCOUNT_QUERY_KEY, fetchAccount} from "./auth/queries/AccountQuery";
 import {collectorRoutes} from "./routes/collector.route";
 import {adminRoutes} from "./routes/admin.route";
 import {HeaderLayout} from "./components/HeaderLayout";
@@ -22,23 +21,19 @@ import {LoginPage} from "./pages/LoginPage";
 
 
 function App() {
+
+    const queryClient = useQueryClient();
     console.group("APP");
     const [jwt, setJwt] = useLocalStorage<JwtToken>(JWT_KEY);
     const [user, setUser] = useState<UserInfo | null>(null);
 
-    const {data} = useQuery([ACCOUNT_QUERY], fetchAccount, {
+    const {data} = useQuery([ACCOUNT_QUERY_KEY, jwt], fetchAccount, {
         onSuccess: (data) => setUser(data),
         onError: error => {
             console.log("error happened fetching user account")
             setJwt(null);
         },
     });
-
-
-    useEffect(() => {
-        console.log("JWT changed, fetching new user account information")
-        queryClient.invalidateQueries(ACCOUNT_QUERY).then();
-    }, [jwt]);
 
     function handleLogin(loginResponse: LoginJwtResponse) {
         console.log("User successfully logged in")
@@ -48,11 +43,12 @@ function App() {
 
     function handleLogout(): void {
         console.log("User logged out")
+        localStorage.removeItem(JWT_KEY);
         setJwt(null);
         setUser(null);
     }
 
-    const accountLoader =
+    const accountLoader = (queryClient: QueryClient, jwt: JwtToken | null) =>
         async () => {
             console.group("account loader")
             if (!isJwtTokenPresent()) {
@@ -60,9 +56,14 @@ function App() {
                 console.groupEnd();
                 return null;
             }
-            const answer = queryClient.getQueryData([ACCOUNT_QUERY]) ??
-                await queryClient.fetchQuery([ACCOUNT_QUERY], fetchAccount);
-            console.log(answer);
+            const cached = queryClient.getQueryData([ACCOUNT_QUERY_KEY, jwt]);
+            if (cached) {
+                console.log("get user info from query cache");
+                console.groupEnd();
+                return cached
+            }
+            const answer = await queryClient.fetchQuery([ACCOUNT_QUERY_KEY, jwt], fetchAccount);
+            console.log("Fetching user info, no cache were available");
             console.groupEnd();
             return answer;
         }
@@ -80,13 +81,13 @@ function App() {
                     path: "/admin/*",
                     element: <AdminPage/>,
                     children: adminRoutes,
-                    loader: accountLoader
+                    loader: accountLoader(queryClient, jwt)
                 },
                 {
                     path: "/*",
                     element: <AuthenticatedPage/>,
                     children: collectorRoutes,
-                    loader: accountLoader
+                    loader: accountLoader(queryClient, jwt)
                 },
             ]
         }

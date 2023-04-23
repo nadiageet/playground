@@ -1,14 +1,8 @@
 import {useQuery} from "react-query";
-import fetchClient from "../client/FetchClient";
 import {useState} from "react";
 import './quotedex.css'
+import {fetchQuotedex, QUOTEDEX_QUERY_KEY, QuotedexRecord} from "../auth/queries/QuotedexQuery";
 
-type QuotedexRecord = {
-    id: number,
-    content: string,
-    originator: string,
-    numberOfQuotes: number
-}
 
 export function Quote(quote: QuotedexRecord) {
     const content = quote.numberOfQuotes === 0 ? "???" : quote.content;
@@ -24,12 +18,13 @@ export function Quotedex() {
 
     const [onlyShowPossessed, setOnlyShowPossessed] = useState(false);
 
-    const {data: quotedex, isFetching} = useQuery("quotedex", () => {
-        return fetchClient.get<QuotedexRecord[]>('/api/v2/quotedex')
-            .then(axiosResponse => axiosResponse.data);
-    })
+    const {data: quotedex, isFetching} = useQuery(QUOTEDEX_QUERY_KEY, fetchQuotedex,
+        {
+            staleTime: 6000,
+        });
+
     if (isFetching) {
-        return <div>fetching...</div>
+        return <div>Chargement du Quotedex...</div>
     }
 
     if (!quotedex) {

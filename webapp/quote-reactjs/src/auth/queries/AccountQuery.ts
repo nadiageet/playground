@@ -3,7 +3,7 @@ import fetchClient from "../../client/FetchClient";
 import {UserInfo} from "../dto/UserInfo";
 
 
-export const ACCOUNT_QUERY = "account";
+export const ACCOUNT_QUERY_KEY = "account";
 
 export function fetchAccount() {
     console.group("fetchAccount");
