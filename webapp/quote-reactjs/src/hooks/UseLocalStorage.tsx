@@ -16,6 +16,7 @@ export function getValueFromStorage<T>(key: string, defaultValue: T | null = nul
 
 function updateLocalStorage<T>(value: T | null, key: string) {
     if (value === null) {
+        console.log("removed item with key = " + key);
         localStorage.removeItem(key);
     } else {
         localStorage.setItem(key, JSON.stringify(value));
@@ -23,11 +24,10 @@ function updateLocalStorage<T>(value: T | null, key: string) {
 }
 
 export default function useLocalStorage<T>(key: string, defaultValue: T | null = null): [T | null, React.Dispatch<React.SetStateAction<T | null>>] {
-    console.log("retrieving key" + key);
+    console.log("retrieving key " + key);
     const [value, setValue] = useState<T | null>(() => {
-        console.log("HERE")
         const valueFromStorage = getValueFromStorage(key, defaultValue);
-        console.log("initial value from local storage : " + valueFromStorage);
+        console.log(`initial value from local storage for key ${key}`, valueFromStorage);
         return valueFromStorage;
     });
 

@@ -6,7 +6,7 @@ import useLocalStorage, {LocalStorageContainer} from "../hooks/UseLocalStorage";
 import {LoginJwtResponse} from "./dto/LoginJwtResponse";
 
 
-interface LoginFormProps {
+export interface LoginFormProps {
     onSuccessfullyLogin: (jwt: LoginJwtResponse) => void
 }
 
@@ -46,6 +46,7 @@ export default function LoginForm({onSuccessfullyLogin}: LoginFormProps) {
             <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Login</Form.Label>
                 <Form.Control
+                    autoComplete="username"
                     value={userName?.value || ''}
                     onChange={(e) => handleUsernameChange(e)}
                     placeholder="Votre login..."/>
@@ -54,6 +55,7 @@ export default function LoginForm({onSuccessfullyLogin}: LoginFormProps) {
             <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>Password</Form.Label>
                 <Form.Control
+                    autoComplete="current-password"
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                     type="password"
