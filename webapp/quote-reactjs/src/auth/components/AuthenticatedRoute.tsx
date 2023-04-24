@@ -1,5 +1,6 @@
 import React from 'react';
-import {Navigate, useLoaderData} from 'react-router-dom';
+import {Navigate} from 'react-router-dom';
+import {useAuthenticatedUser} from "../UserContext";
 
 interface PrivateRouteProps {
     children?: any
@@ -14,8 +15,7 @@ function AuthenticatedRoute({
                                 children,
                             }: PrivateRouteProps) {
 
-    const user = useLoaderData();
-    console.log("user from loader data : ", user);
+    const user = useAuthenticatedUser();
 
     if (!user) {
         console.log("User must be authenticated to access this route, redirecting to '/login'");

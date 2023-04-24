@@ -10,7 +10,7 @@ function AnonymousOnlyRoute({
                             }: AnonymousOnlyRouteProps) {
     if (isJwtTokenPresent()) {
         console.log("User must be anonymous to access this route, redirecting to '/'");
-        return <Navigate to={"/"}/>;
+        return <Navigate to={"/"} replace/>;
     } else {
         return children;
     }
