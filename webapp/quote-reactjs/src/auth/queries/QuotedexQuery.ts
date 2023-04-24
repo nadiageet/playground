@@ -9,7 +9,7 @@ export function fetchQuotedex() {
 
 
 export type QuotedexRecord = {
-    id: number,
+    quoteId: number,
     content: string,
     originator: string,
     numberOfQuotes: number

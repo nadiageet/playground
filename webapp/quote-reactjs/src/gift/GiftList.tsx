@@ -7,8 +7,7 @@ import toast from 'react-hot-toast';
 import axios from "axios";
 import {Gift} from "./Gift";
 import {fetchGifts, GIFT_QUERY_KEY} from "../auth/queries/GiftQuery";
-
-toast.error('Something went wrong')
+import {Spinners} from "../components/Spinners";
 
 export function GiftList() {
 
@@ -28,9 +27,7 @@ export function GiftList() {
 
     useEffect(() => {
         if (axios.isAxiosError(error)) {
-            toast.error(error?.response?.data.message || '', {
-                position: 'bottom-right'
-            })
+            toast.error(error?.response?.data.message || '')
         }
     }, [error])
 
@@ -41,7 +38,9 @@ export function GiftList() {
         });
 
     if (isLoading) {
-        return <p>Nous cherchons vos cadeaux...</p>
+        return <div className={"loading"}>
+            <Spinners/>
+        </div>
     }
 
 

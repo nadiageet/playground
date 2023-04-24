@@ -13,44 +13,44 @@ import {ACCOUNT_QUERY_KEY, fetchAccount} from "./auth/queries/AccountQuery";
 import {collectorRoutes} from "./routes/collector.route";
 import {adminRoutes} from "./routes/admin.route";
 import {HeaderLayout} from "./components/HeaderLayout";
-import useLocalStorage from "./hooks/UseLocalStorage";
-import {JwtToken} from "./auth/dto/JwtToken";
 import {AdminPage} from "./pages/AdminPage";
 import {AuthenticatedPage} from "./pages/AuthenticatedPage";
 import {LoginPage} from "./pages/LoginPage";
+import useLocalStorage from 'react-use/lib/useLocalStorage';
+import {Spinners} from "./components/Spinners";
 
 
 function App() {
-    console.group("APP");
-    const [jwt, setJwt] = useLocalStorage<JwtToken>(JWT_KEY);
+    const [jwt, setJwt, removeJwt] = useLocalStorage<string>(JWT_KEY, undefined, {raw: true})
     const [user, setUser] = useState<UserInfo | null>(null);
 
-    const {data, isLoading} = useQuery([ACCOUNT_QUERY_KEY, jwt], fetchAccount, {
+    const {data, isLoading: isLoadingUserAuthFromJwtToken} = useQuery([ACCOUNT_QUERY_KEY, jwt], fetchAccount, {
         onSuccess: (data) => setUser(data),
         onError: error => {
             console.log("error happened fetching user account")
-            setJwt(null);
+            // setJwt(null);
+            removeJwt();
         },
     });
 
-    if (isLoading) {
-        return <>
-            "Loading..."
-        </>
+    if (isLoadingUserAuthFromJwtToken) {
+        return <div className={"loading-screen"}>
+            <Spinners/>
+        </div>
     }
 
     function handleLogin(loginResponse: LoginJwtResponse) {
         console.log("User successfully logged in")
         console.log("set jwt " + loginResponse.jwt);
-        setJwt({value: loginResponse.jwt});
+        setJwt(loginResponse.jwt);
     }
 
     function handleLogout(): void {
         console.log("User logged out")
-        localStorage.removeItem(JWT_KEY);
-        setJwt(null);
+        removeJwt();
         setUser(null);
     }
+
     const router = createBrowserRouter([
         {
             element: <HeaderLayout onLogout={handleLogout}/>,
@@ -73,8 +73,6 @@ function App() {
         }
     ])
 
-
-    console.groupEnd();
     return (
         <div className="App">
             <Toaster position={"top-center"}/>

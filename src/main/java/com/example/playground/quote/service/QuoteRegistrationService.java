@@ -115,7 +115,7 @@ public class QuoteRegistrationService {
 
     public GetCountQuotedexResponse mapCountQuotedex(Set<QuoteRegistration> possessedQuotes, Quote quote) {
         var builder = GetCountQuotedexResponse.builder();
-        builder.id(quote.getId());
+        builder.quoteId(quote.getId());
         int countOfQuote = (int) possessedQuotes.stream().filter(quoteRegistration -> quoteRegistration.getQuote().equals(quote))
                 .count();
         builder.numberOfQuotes(countOfQuote);

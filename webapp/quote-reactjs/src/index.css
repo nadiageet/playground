@@ -1,5 +1,8 @@
 .navbar-brand {
     cursor: pointer;
+    /*font-family: 'Marker Felt', sans-serif;*/
+    font-family: 'Impact', sans-serif;
+
 }
 
 .italic {

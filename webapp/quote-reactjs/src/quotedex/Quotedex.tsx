@@ -2,6 +2,7 @@ import {useQuery} from "react-query";
 import {useState} from "react";
 import './quotedex.css'
 import {fetchQuotedex, QUOTEDEX_QUERY_KEY, QuotedexRecord} from "../auth/queries/QuotedexQuery";
+import {Spinners} from "../components/Spinners";
 
 
 export function Quote(quote: QuotedexRecord) {
@@ -10,21 +11,23 @@ export function Quote(quote: QuotedexRecord) {
     return <div className={quote.numberOfQuotes == 0 ? "quote not-possessed" : "quote"}>
         <p className={"content"}>"{content}"</p>
         <p className={"originator"}>- {quote.originator}</p>
-        <div className={"id"}>{quote.id}</div>
+        <div className={"id"}>{quote.quoteId}</div>
     </div>;
 }
 
 export function Quotedex() {
 
-    const [onlyShowPossessed, setOnlyShowPossessed] = useState(false);
+    const [showNotPossessedQuotes, setShowNotPossessedQuotes] = useState(false);
 
-    const {data: quotedex, isFetching} = useQuery(QUOTEDEX_QUERY_KEY, fetchQuotedex,
+    const {data: quotedex, isLoading} = useQuery(QUOTEDEX_QUERY_KEY, fetchQuotedex,
         {
             staleTime: 6000,
         });
 
-    if (isFetching) {
-        return <div>Chargement du Quotedex...</div>
+    if (isLoading) {
+        return <div className={"loading"}>
+            <Spinners/>
+        </div>
     }
 
     if (!quotedex) {
@@ -32,7 +35,7 @@ export function Quotedex() {
     }
 
     function handleOnChange(e: any) {
-        setOnlyShowPossessed(e.target.checked);
+        setShowNotPossessedQuotes(e.target.checked);
     }
 
     const totalQuotes = quotedex.length;
@@ -51,10 +54,10 @@ export function Quotedex() {
 
     const isFullQuotedex = totalQuotes === possessedCount;
 
-    const quotes = quotedex.filter(e => !onlyShowPossessed || e.numberOfQuotes > 0)
+    const quotes = quotedex.filter(e => showNotPossessedQuotes || e.numberOfQuotes > 0)
         .map(quote => {
-            return <Quote id={quote.id}
-                          key={quote.id}
+            return <Quote quoteId={quote.quoteId}
+                          key={quote.quoteId}
                           content={quote.content}
                           originator={quote.originator}
                           numberOfQuotes={quote.numberOfQuotes}
@@ -68,7 +71,7 @@ export function Quotedex() {
                        id="flexCheckDefault"
                        onChange={handleOnChange}/>
                 <label className="form-check-label" htmlFor="flexCheckDefault">
-                    Masquer les citations non possédées
+                    Afficher les citations non possédées
                 </label>
             </div>
             <p className={"alert " + (isFullQuotedex ? "alert-success" : "alert-secondary")}>

@@ -2,11 +2,12 @@ package com.example.playground.quote.api;
 
 import com.example.playground.quote.api.response.GetCountQuotedexResponse;
 import com.example.playground.quote.service.QuoteRegistrationService;
-import com.example.playground.quote.service.QuoteService;
-import com.example.playground.quote.repository.UserRepository;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -19,15 +20,10 @@ public class QuoteControllerV2 {
 
 
     private final QuoteRegistrationService quoteRegistrationService;
-    private final UserRepository userRepository;
-    private final QuoteService quoteService;
 
 
-
-    public QuoteControllerV2(QuoteRegistrationService quoteRegistrationService, UserRepository userRepository, QuoteService quoteService) {
+    public QuoteControllerV2(QuoteRegistrationService quoteRegistrationService) {
         this.quoteRegistrationService = quoteRegistrationService;
-        this.userRepository = userRepository;
-        this.quoteService = quoteService;
     }
 
 

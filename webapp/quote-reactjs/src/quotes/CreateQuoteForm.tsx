@@ -42,7 +42,7 @@ export function CreateQuoteForm() {
                 onChange={handleOnChange}
             />
         </FloatingLabel>
-        <Button variant={"outline-primary"} type={"submit"}>Soumettre</Button>
+        <Button disabled={isLoading || !content} variant={"outline-primary"} type={"submit"}>Soumettre</Button>
 
         <ToastContainer
             className="p-3 position-static"

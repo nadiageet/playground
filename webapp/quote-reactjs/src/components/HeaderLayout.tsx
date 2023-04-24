@@ -12,7 +12,7 @@ export const HeaderLayout = ({onLogout}: HeaderLayoutProps) => {
         <header>
             <AppNavbar onLogout={onLogout}/>
         </header>
-        <Container>
+        <Container className={"app-container-layout"}>
             <Outlet/>
         </Container>
     </>);

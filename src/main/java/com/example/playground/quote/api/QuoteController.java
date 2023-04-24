@@ -6,7 +6,7 @@ import com.example.playground.quote.QuoteRegistrationMapper;
 import com.example.playground.quote.api.request.CreateQuoteRequest;
 import com.example.playground.quote.api.request.GenerateQuoteRequest;
 import com.example.playground.quote.api.request.GiftQuoteRequest;
-import com.example.playground.quote.api.response.GetQuoteRegistrationsResponse;
+import com.example.playground.quote.api.response.QuoteResponse;
 import com.example.playground.quote.domain.Quote;
 import com.example.playground.quote.domain.QuoteRegistration;
 import com.example.playground.quote.service.QuoteRegistrationService;
@@ -18,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Set;
 
 // TODO: 18/01/2023  split this controller into multiple domains
@@ -81,7 +82,7 @@ public class QuoteController {
 
     @GetMapping("/quotesRegistrations")
     @ApiModelProperty("Get all the quotes registrations owned by the requester")
-    public GetQuoteRegistrationsResponse getAllQuoteRegistrations() {
+    public List<QuoteResponse> getAllQuoteRegistrations() {
         log.debug("request received to all the quote registrations owned by the requester");
         Set<QuoteRegistration> entities = quoteRegistrationService.getAllQuoteRegistrations();
         return QuoteRegistrationMapper.createQuoteRegistration(entities);
@@ -90,7 +91,7 @@ public class QuoteController {
 
     @GetMapping("/quotesProposed")
     @ApiModelProperty("Get all the quote proposed for exchange by other person than the requester")
-    public GetQuoteRegistrationsResponse getAllQuotesRegistrationsProposed() {
+    public List<QuoteResponse> getAllQuotesRegistrationsProposed() {
         log.debug("request received to all the quote proposed for exchange by other person than the requester");
         Set<QuoteRegistration> entities = quoteRegistrationService.getAllProposedQuotes();
         return QuoteRegistrationMapper.createQuoteRegistration(entities);
@@ -98,6 +99,7 @@ public class QuoteController {
 
     @PostMapping("/gift")
     @ApiModelProperty("proposed quote by the requester")
+    @Deprecated
     public void proposeQuote(@RequestBody GiftQuoteRequest giftQuoteRequest) {
         quoteService.giftQuote(giftQuoteRequest.getUserId(), giftQuoteRequest.getQuoteId());
     }

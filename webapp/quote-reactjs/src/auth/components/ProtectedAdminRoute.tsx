@@ -1,6 +1,6 @@
 import React from 'react';
 import {Navigate} from 'react-router-dom';
-import {useAuthenticatedUser} from "../UserContext";
+import {useAuthentication} from "../hooks/useAuthentication";
 
 interface PrivateRouteProps {
     children?: any
@@ -9,8 +9,8 @@ interface PrivateRouteProps {
 function ProtectedAdminRoute({
                                  children,
                              }: PrivateRouteProps) {
-    const user = useAuthenticatedUser();
-    if (user?.roles?.includes("ADMIN")) {
+    const {isAdmin} = useAuthentication();
+    if (isAdmin) {
         return children;
     } else {
         console.log("User must be an admin to access this route, redirecting to '/'")

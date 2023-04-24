@@ -27,6 +27,7 @@ public class QuoteRegistrationController {
 
     @ApiOperation(value = "initial version", tags = "Quotedex")
     @GetMapping("/quotedex")
+    @Deprecated
     public List<GetQuotedexResponse> getQuotedex(){
         return quoteRegistrationService.getQuotedex();
     }

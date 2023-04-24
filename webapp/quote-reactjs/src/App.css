@@ -1,0 +1,46 @@
+.loading-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.loading-spinners {
+    display: flex;
+    gap: 15px;
+}
+
+.navbar-menu {
+    flex-grow: 3;
+    gap: 15px;
+}
+
+.navbar-icon-menu {
+    display: flex;
+    flex-grow: 1;
+    gap: 15px;
+    justify-content: end;
+    padding-right: 25px;
+}
+
+.app-container-layout {
+    margin-top: 120px;
+}
+
+.navbar-activable {
+    text-decoration: none;
+    padding: var(--bs-nav-link-padding-y) var(--bs-nav-link-padding-x);
+    font-size: var(--bs-nav-link-font-size);
+    font-weight: var(--bs-nav-link-font-weight);
+    color: var(--bs-nav-link-color);
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out;
+}
+
+.navbar-activable.active {
+    color: black;
+    /*color: red*/
+}
+
+.navbar-activable.active:hover {
+    color: black !important;
+}
