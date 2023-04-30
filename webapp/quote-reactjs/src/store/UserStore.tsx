@@ -18,6 +18,7 @@ export function UserStore() {
     }
     return <>
         <ProposedQuotesList quoteRegistrations={data ?? []}/>
+        <hr/>
         <AvailableQuoteList quoteRegistrations={data ?? []}/>
     </>
 }

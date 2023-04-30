@@ -16,8 +16,9 @@ export function QuoteRegistrationComponent({quoteRegistration, onPropose}: Quote
             <div>
                 {quoteRegistration.quoteContent}
             </div>
-            <Button onClick={() => onPropose(quoteRegistration.registrationId)} variant={"primary"}>Proposer a
-                l'échange</Button>
+            <Button onClick={() => onPropose(quoteRegistration.registrationId)} variant={"primary"}>
+                Proposer a l'échange
+            </Button>
         </div>
     </>
 }

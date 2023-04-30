@@ -13,7 +13,13 @@ export type QuoteRegistration = {
     isProposed: boolean
 }
 
+export type ProposeQuoteQueryType = {
+    quoteRegistrationId: number,
+    isProposed: boolean
+}
 
-export function proposeQuoteQuery(quoteRegistrationId: number) {
-    return fetchClient.post(`/api/v1/trade/propose/${quoteRegistrationId}`);
+export function proposeQuoteQuery({quoteRegistrationId, isProposed}: ProposeQuoteQueryType) {
+    return fetchClient.post(`/api/v1/trade/propose/${quoteRegistrationId}`, {
+        isProposed
+    });
 }

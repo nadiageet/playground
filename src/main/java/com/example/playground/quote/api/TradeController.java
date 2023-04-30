@@ -2,6 +2,7 @@ package com.example.playground.quote.api;
 
 import com.example.playground.feign.rapidapi.RandomQuoteClient;
 import com.example.playground.quote.api.request.CreateQuoteTradeRequest;
+import com.example.playground.quote.api.request.ProposeQuoteRequest;
 import com.example.playground.quote.api.request.UpdateQuoteRequest;
 import com.example.playground.quote.api.response.TradeHistory;
 import com.example.playground.quote.api.response.TradeInProgress;
@@ -32,9 +33,9 @@ public class TradeController {
 
     @PostMapping("/propose/{quoteRegistrationId}")
     @ApiModelProperty("Propose for exchange a quote by the requester")
-    public void proposeQuote(@PathVariable Long quoteRegistrationId) {
+    public void proposeQuote(@PathVariable Long quoteRegistrationId, @RequestBody ProposeQuoteRequest proposeQuoteRequest) {
         log.debug("request received to propose for exchange a quote by the requester");
-        quoteService.proposeQuote(quoteRegistrationId);
+        quoteService.proposeQuote(quoteRegistrationId, proposeQuoteRequest.isProposed());
     }
 
     // TODO: 26/01/2023 API pour lancer un echange

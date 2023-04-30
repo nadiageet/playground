@@ -24,13 +24,11 @@ export function AvailableQuoteList({quoteRegistrations}: AvailableQuoteListPros)
         <ul className={"quote-registration-list"}>
             {availableQuoteList.map(qr => <ol key={qr.quoteId}>
                 <QuoteRegistrationComponent
-                    onPropose={quoteRegistrationId => proposeQuote(quoteRegistrationId)}
+                    onPropose={(quoteRegistrationId) => proposeQuote({quoteRegistrationId, isProposed: true})}
                     quoteRegistration={qr}
                 />
             </ol>)}
         </ul>
-        <pre>
-            {JSON.stringify(quoteRegistrations, null, 4)}
-        </pre>
+
     </>;
 }

@@ -93,10 +93,10 @@ public class QuoteService {
 
     }
 
-    public void proposeQuote(Long quoteRegistrationId) {
+    public void proposeQuote(Long quoteRegistrationId, boolean proposed) {
         QuoteRegistration quote = quoteRegistrationRepository.findById(quoteRegistrationId)
                 .orElseThrow(() -> new ApplicationException("quote-registration.notfound"));
-        quote.setProposedQuote(true);
+        quote.setProposedQuote(proposed);
     }
 
 
