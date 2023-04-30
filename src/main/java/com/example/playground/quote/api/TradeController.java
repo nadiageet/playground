@@ -3,16 +3,12 @@ package com.example.playground.quote.api;
 import com.example.playground.feign.rapidapi.RandomQuoteClient;
 import com.example.playground.quote.api.request.CreateQuoteTradeRequest;
 import com.example.playground.quote.api.request.UpdateQuoteRequest;
-import com.example.playground.quote.api.response.CollectionOfTrade;
 import com.example.playground.quote.api.response.TradeHistory;
 import com.example.playground.quote.api.response.TradeInProgress;
-import com.example.playground.quote.api.response.UserResponse;
 import com.example.playground.quote.service.QuoteRegistrationService;
 import com.example.playground.quote.service.QuoteService;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,11 +30,11 @@ public class TradeController {
         this.quoteRegistrationService = quoteRegistrationService;
     }
 
-    @PostMapping("/propose/{quoteId}")
+    @PostMapping("/propose/{quoteRegistrationId}")
     @ApiModelProperty("Propose for exchange a quote by the requester")
-    public void proposeQuote(@PathVariable Long quoteId) {
+    public void proposeQuote(@PathVariable Long quoteRegistrationId) {
         log.debug("request received to propose for exchange a quote by the requester");
-        quoteService.proposeQuote(quoteId);
+        quoteService.proposeQuote(quoteRegistrationId);
     }
 
     // TODO: 26/01/2023 API pour lancer un echange

@@ -1,0 +1,11 @@
+.quote-registration-container {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+.quote-registration-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}

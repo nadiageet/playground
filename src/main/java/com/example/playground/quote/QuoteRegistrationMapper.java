@@ -11,8 +11,8 @@ public class QuoteRegistrationMapper {
     public static List<QuoteResponse> createQuoteRegistration(Set<QuoteRegistration> entities) {
         return entities.stream().
                 map(quoteRegistration -> new QuoteResponse(
-                        quoteRegistration.getQuote().getId(),
                         quoteRegistration.getId(),
+                        quoteRegistration.getQuote().getId(),
                         quoteRegistration.getQuote().getContent(),
                         quoteRegistration.isProposedQuote()
                 ))
