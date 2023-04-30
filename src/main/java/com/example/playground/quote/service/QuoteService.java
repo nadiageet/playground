@@ -94,8 +94,7 @@ public class QuoteService {
     }
 
     public void proposeQuote(Long quoteRegistrationId, boolean proposed) {
-        QuoteRegistration quote = quoteRegistrationRepository.findById(quoteRegistrationId)
-                .orElseThrow(() -> new ApplicationException("quote-registration.notfound"));
+        QuoteRegistration quote = quoteRegistrationRepository.getReferenceById(quoteRegistrationId);
         quote.setProposedQuote(proposed);
     }
 

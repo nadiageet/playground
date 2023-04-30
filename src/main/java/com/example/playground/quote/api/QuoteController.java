@@ -6,6 +6,7 @@ import com.example.playground.quote.QuoteRegistrationMapper;
 import com.example.playground.quote.api.request.CreateQuoteRequest;
 import com.example.playground.quote.api.request.GenerateQuoteRequest;
 import com.example.playground.quote.api.request.GiftQuoteRequest;
+import com.example.playground.quote.api.response.MarketQuoteRegistration;
 import com.example.playground.quote.api.response.QuoteResponse;
 import com.example.playground.quote.domain.Quote;
 import com.example.playground.quote.domain.QuoteRegistration;
@@ -89,12 +90,12 @@ public class QuoteController {
 
     }
 
-    @GetMapping("/quotesProposed")
+    @GetMapping("/quoteMarket")
     @ApiModelProperty("Get all the quote proposed for exchange by other person than the requester")
-    public List<QuoteResponse> getAllQuotesRegistrationsProposed() {
+    public List<MarketQuoteRegistration> getAllQuotesRegistrationsProposed() {
         log.debug("request received to all the quote proposed for exchange by other person than the requester");
         Set<QuoteRegistration> entities = quoteRegistrationService.getAllProposedQuotes();
-        return QuoteRegistrationMapper.createQuoteRegistration(entities);
+        return QuoteRegistrationMapper.mapToMarket(entities);
     }
 
     @PostMapping("/gift")
